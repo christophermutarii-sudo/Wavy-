@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wavy AI</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/settings.js"></script>
+<style>
+body{background:#fff !important;padding-bottom:0}
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 10px;background:#fff;position:sticky;top:0;z-index:20}
+.top-bar button{background:none;border:none;color:#000;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.top-bar b{font-size:18px;display:flex;align-items:center;gap:8px}
+.top-bar svg,.plus-btn svg,.mic-btn svg,.send-btn svg,.cam-btn svg{width:22px;height:22px;fill:none;stroke:#000;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.chat-area{padding:10px 16px 150px;max-width:650px;margin:0 auto}
+.msg-row{display:flex;margin-bottom:14px}
+.msg-row.me{justify-content:flex-end}
+.msg-bubble{background:#f0f0f0;color:#000;padding:12px 16px;border-radius:16px;max-width:80%;line-height:1.5;font-size:16px;white-space:pre-wrap}
+.msg-row.me .msg-bubble{background:#0082ff;color:#fff}
+.msg-row.ai .msg-bubble{background:transparent;padding:12px 4px}
+.input-wrap{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 14px 18px}
+.input-box{background:#f0f0f0;border-radius:22px;padding:14px 14px 10px;max-width:650px;margin:0 auto}
+.input-box textarea{width:100%;background:transparent !important;border:none !important;color:#000;outline:none;font-size:17px;resize:none;min-height:24px;padding:0 !important}
+.input-bottom{display:flex;align-items:center;gap:10px;margin-top:6px}
+.plus-btn,.mic-btn,.send-btn,.cam-btn{width:38px;height:38px;border-radius:50%;background:#fff !important;border:1px solid #ddd !important;color:#000 !important;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.model-pill{background:#fff !important;color:#000 !important;border:1px solid #ddd !important;padding:9px 14px;border-radius:999px;font-size:14px}
+.bottom-nav{display:none}
+.offline-bar{display:none;text-align:center;color:#888;font-size:14px}
+.offline-bar.show{display:block}
+.typing{padding:6px 20px;color:#888;font-size:13px;display:none}
+.typing.show{display:block}
+.file-preview-bar{display:none;gap:8px;flex-wrap:wrap;padding:8px 14px;max-width:650px;margin:0 auto;background:#fff}
+.file-preview-bar.show{display:flex}
+.upload-menu{display:none;position:fixed;bottom:90px;left:16px;background:#fff;border:1px solid #eee;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:999;padding:8px;width:240px}
+.upload-menu.show{display:block}
+.upload-menu button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none !important;border:none !important;padding:12px;font-size:15px;cursor:pointer;color:#000 !important}
+.upload-menu button svg{width:20px;height:20px;fill:none;stroke:#000;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.upload-menu button:active{background:#f0f0f0 !important}
+.menu-link{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #eee;color:#000;text-decoration:none}
+.menu-link svg{width:20px;height:20px;fill:none;stroke:#000;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mode-btn{display:flex;align-items:center;gap:8px;border:none;padding:8px 16px;border-radius:999px;cursor:pointer}
+.mode-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <button onclick="toggleMenu()"><svg viewBox="0 0 24 24"><path d="M4 6 H20 M4 12 H20 M4 18 H20"/></svg></button>
+  <b><svg viewBox="0 0 24 24" style="width:22px;height:22px"><path d="M2 12 C5 7 9 7 12 12 C15 17 19 17 22 12"/><path d="M2 17 C5 12 9 12 12 17 C15 22 19 22 22 17"/></svg> Wavy AI</b>
+  <button onclick="location.href='index.html'"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><path d="M8.5 15 C10 16.5 14 16.5 15.5 15"/></svg></button>
+</div>
+
+<div id="sideMenu" style="position:fixed;top:0;left:-260px;width:260px;height:100%;background:#fff;z-index:100;transition:0.3s;padding:20px;box-shadow:0 0 20px rgba(0,0,0,.2)">
+  <h3>Wavy AI</h3>
+  <p style="color:#888;font-size:13px" id="menuUser">Hi!</p>
+  <a href="index.html" class="menu-link"><svg viewBox="0 0 24 24"><path d="M3 10 L12 2 L21 10 V20 H3 Z"/><path d="M9 20 V14 H15 V20"/></svg> Home</a>
+  <a href="wavy.html" class="menu-link"><svg viewBox="0 0 24 24"><path d="M4 4 H20 V16 H10 L6 20 V16 H4 Z"/><path d="M8 9 H16 M8 12 H13"/></svg> New Chat</a>
+  <a href="#" onclick="clearChat();return false" class="menu-link"><svg viewBox="0 0 24 24"><path d="M4 7 H20"/><path d="M9 7 V4 H15 V7"/><path d="M6 7 L7 20 H17 L18 7"/><path d="M10 11 V17 M14 11 V17"/></svg> Clear Chat</a>
+  <a href="profile.html" class="menu-link"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21 C4 16 8 14 12 14 C16 14 20 16 20 21"/></svg> Profile</a>
+  <a href="settings.html" class="menu-link" style="border-bottom:none"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2 V5 M12 19 V22 M2 12 H5 M19 12 H22 M4.9 4.9 L7 7 M17 17 L19.1 19.1 M19.1 4.9 L17 7 M7 17 L4.9 19.1"/></svg> Settings</a>
+  <button class="btn" onclick="toggleMenu()" style="margin-top:10px">Close</button>
+  <p style="color:#888;font-size:12px;margin-top:20px">Voice:</p>
+  <select id="voiceSelect" style="background:#f0f0f0"></select>
+  <p style="color:#888;font-size:12px">Speed:</p>
+  <input type="range" id="speedRange" min="0.5" max="1.5" step="0.1" value="1">
+</div>
+
+<div style="display:flex;gap:8px;justify-content:center;padding:8px">
+  <button id="chatModeBtn" class="mode-btn" style="background:#000;color:#fff" onclick="setMode('chat')"><svg viewBox="0 0 24 24"><path d="M4 4 H20 V16 H10 L6 20 V16 H4 Z"/></svg> Chat</button>
+  <button id="imageModeBtn" class="mode-btn" style="background:#f0f0f0;color:#000" onclick="setMode('image')"><svg viewBox="0 0 24 24"><path d="M12 3 L15 8.5 L22 9.5 L17 14.5 L18.5 21.5 L12 18 L5.5 21.5 L7 14.5 L2 9.5 L9 8.5 Z"/></svg> Images</button>
+</div>
+
+<div id="offlineBar" class="offline-bar">You are offline. Files will show preview, AI will answer when you get data.</div>
+<div id="chatBox" class="chat-area"></div>
+<div id="typing" class="typing">Wavy AI is thinking...</div>
+
+<div id="imageGenBox" style="display:none;padding:0 16px 10px;max-width:650px;margin:0 auto">
+  <div style="background:#f0f0f0;border-radius:16px;padding:14px">
+    <b>What should I draw?</b>
+    <input id="imagePromptInput" placeholder="e.g. A truck in Eldoret at sunset..." style="width:100%;padding:10px;border-radius:10px;border:1px solid #ddd;margin:8px 0">
+    <button class="btn" onclick="generateImageFromInput()">Generate Image</button>
+    <div id="generatedImageArea"></div>
+  </div>
+</div>
+
+<div id="filePreviewBar" class="file-preview-bar"></div>
+
+<div id="uploadMenu" class="upload-menu">
+  <button onclick="pickFile('image/*')"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="M21 16 L15 10 L5 19"/></svg> Photo / Gallery</button>
+  <button onclick="pickFile('camera')"><svg viewBox="0 0 24 24"><path d="M4 8 H7 L9 5 H15 L17 8 H20 V19 H4 Z"/><circle cx="12" cy="13" r="3.5"/></svg> Take Photo</button>
+  <button onclick="pickFile('file')"><svg viewBox="0 0 24 24"><path d="M7 3 H14 L20 9 V21 H7 Z"/><path d="M14 3 V9 H20"/></svg> Document / PDF</button>
+  <button onclick="pickFile('audio')"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11 C5 15 8 18 12 18 C16 18 19 15 19 11"/><path d="M12 18 V22"/></svg> Voice Note</button>
+  <button onclick="pickFile('video')"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10 L21 7 V17 L16 14"/></svg> Video</button>
+  <button onclick="closeUploadMenu()" style="color:#888 !important;justify-content:center">Cancel</button>
+</div>
+
+<div class="input-wrap">
+  <div class="input-box">
+    <textarea id="textInput" rows="1" placeholder="Ask Wavy AI... (or attach file with +)" oninput="autoGrow(this)" onkeypress="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendText()}"></textarea>
+    <div class="input-bottom">
+      <button class="plus-btn" onclick="toggleUploadMenu()"><svg viewBox="0 0 24 24"><path d="M12 5 V19 M5 12 H19"/></svg></button>
+      <button class="model-pill" onclick="cycleModel()"><span id="modelLabel">Gemini 3.8 Flash</span> ▼</button>
+      <button class="mic-btn" id="micBtn" onclick="toggleListen()"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11 C5 15 8 18 12 18 C16 18 19 15 19 11"/><path d="M12 18 V22"/></svg></button>
+      <button class="send-btn" id="sendBtn" onclick="sendText()"><svg viewBox="0 0 24 24"><path d="M12 20 V4"/><path d="M5 11 L12 4 L19 11"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fileInput" hidden multiple accept="image/*,.pdf,.txt,.doc,.docx,.mp3,.wav,.mp4,.csv">
+<input type="file" id="cameraInput" hidden accept="image/*" capture="environment">
+<input type="file" id="audioInput" hidden accept="audio/*">
+<input type="file" id="videoInput" hidden accept="video/*">
+
+<script>
+var GEMINI_API_KEY='';
+try{
+  if(typeof getAIKey==='function') GEMINI_API_KEY=getAIKey();
+  else if(typeof WAVY_SETTINGS!=='undefined' && WAVY_SETTINGS.ai) GEMINI_API_KEY=WAVY_SETTINGS.ai.apiKey;
+}catch(e){ GEMINI_API_KEY=''; }
+var chatHistory=[],voices=[],recognition=null,isListening=false,cachedModel=localStorage.getItem('wavy_model')||'',currentMode='chat',models=['gemini-3.8-flash','gemini-3-flash','gemini-flash-latest'],modelIndex=0;
+var attachedFiles=[];
+function toggleMenu(){var m=document.getElementById('sideMenu');m.style.left=m.style.left==='0px'?'-260px':'0px'}
+function clearChat(){document.getElementById('chatBox').innerHTML='';chatHistory=[];attachedFiles=[];renderFilePreview();addBubble('New chat started!','ai');toggleMenu()}
+function autoGrow(el){el.style.height='auto';el.style.height=el.scrollHeight+'px';var b=document.getElementById('sendBtn');if(el.value.trim()||attachedFiles.length){b.innerHTML='<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:none;stroke:#000;stroke-width:2"><path d="M12 20 V4"/><path d="M5 11 L12 4 L19 11"/></svg>'}else{b.innerHTML='<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:none;stroke:#000;stroke-width:2"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>'}}
+function cycleModel(){modelIndex=(modelIndex+1)%models.length;document.getElementById('modelLabel').textContent=models[modelIndex];cachedModel=models[modelIndex];localStorage.setItem('wavy_model',cachedModel)}
+function checkOffline(){var b=document.getElementById('offlineBar');if(!navigator.onLine)b.classList.add('show');else b.classList.remove('show')}
+window.addEventListener('online',checkOffline);window.addEventListener('offline',checkOffline);checkOffline();
+function setMode(m){currentMode=m;document.getElementById('chatModeBtn').style.background=m==='chat'?'#000':'#f0f0f0';document.getElementById('chatModeBtn').style.color=m==='chat'?'#fff':'#000';document.getElementById('imageModeBtn').style.background=m==='image'?'#000':'#f0f0f0';document.getElementById('imageModeBtn').style.color=m==='image'?'#fff':'#000';document.getElementById('imageGenBox').style.display=m==='image'?'block':'none';if(m==='image')addBubble('Image Mode ON. Tell me what to draw.','ai')}
+function toggleUploadMenu(){var m=document.getElementById('uploadMenu');m.classList.toggle('show')}
+function closeUploadMenu(){document.getElementById('uploadMenu').classList.remove('show')}
+function pickFile(type){closeUploadMenu();if(type==='camera') document.getElementById('cameraInput').click();else if(type==='audio') document.getElementById('audioInput').click();else if(type==='video') document.getElementById('videoInput').click();else document.getElementById('fileInput').click();}
+document.getElementById('fileInput').addEventListener('change',function(){handleFiles(this.files);this.value=''});
+document.getElementById('cameraInput').addEventListener('change',function(){handleFiles(this.files);this.value=''});
+document.getElementById('audioInput').addEventListener('change',function(){handleFiles(this.files);this.value=''});
+document.getElementById('videoInput').addEventListener('change',function(){handleFiles(this.files);this.value=''});
+function handleFiles(files){
+  if(!files||!files.length) return;
+  for(var i=0;i<files.length;i++){
+    var f=files[i];
+    if(f.size>5*1024*1024){alert(f.name+' too big! Max 5MB offline');continue;}
+    (function(file){
+      var reader=new FileReader();
+      reader.onload=function(e){
+        var item={name:file.name,type:file.type||'file',dataUrl:e.target.result,text:''};
+        if(file.type.indexOf('text')!==-1||file.name.endsWith('.txt')||file.name.endsWith('.csv')) item.text=e.target.result;
+        attachedFiles.push(item);renderFilePreview();addBubble('Attached: '+file.name+' ('+Math.round(file.size/1024)+' KB) - Type your question and tap Send!','ai');autoGrow(document.getElementById('textInput'));
+      };
+      if(file.type.indexOf('text')!==-1||file.name.endsWith('.txt')||file.name.endsWith('.csv')) reader.readAsText(file);else reader.readAsDataURL(file);
+    })(f);
+  }
+}
+function renderFilePreview(){
+  var bar=document.getElementById('filePreviewBar');
+  if(!attachedFiles.length){bar.classList.remove('show');bar.innerHTML='';return;}
+  bar.classList.add('show');var h='';
+  attachedFiles.forEach(function(f,idx){
+    if(f.type.indexOf('image')!==-1){h+='<div style="position:relative;width:70px;height:70px"><img src="'+f.dataUrl+'" style="width:70px;height:70px;object-fit:cover;border-radius:12px"><span onclick="removeFile('+idx+')" style="position:absolute;top:-6px;right:-6px;background:#ff4444;color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer">X</span><div style="font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:70px">'+f.name+'</div></div>';}
+    else if(f.type.indexOf('audio')!==-1){h+='<div style="position:relative;background:#e0f0ff;padding:10px 28px 10px 10px;border-radius:12px;font-size:13px">Voice: '+f.name+'<span onclick="removeFile('+idx+')" style="position:absolute;top:2px;right:6px;cursor:pointer">X</span></div>';}
+    else if(f.type.indexOf('video')!==-1){h+='<div style="position:relative;background:#f0e0ff;padding:10px 28px 10px 10px;border-radius:12px;font-size:13px">Video: '+f.name+'<span onclick="removeFile('+idx+')" style="position:absolute;top:2px;right:6px;cursor:pointer">X</span></div>';}
+    else{h+='<div style="position:relative;background:#e0f0ff;padding:10px 28px 10px 10px;border-radius:12px;font-size:13px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">File: '+f.name+'<span onclick="removeFile('+idx+')" style="position:absolute;top:2px;right:6px;cursor:pointer">X</span></div>';}
+  });bar.innerHTML=h;
+}
+function removeFile(idx){attachedFiles.splice(idx,1);renderFilePreview();autoGrow(document.getElementById('textInput'))}
+function addFileBubble(file){
+  var b=document.getElementById('chatBox');var d=document.createElement('div');d.className='msg-row me';
+  if(file.type.indexOf('image')!==-1){d.innerHTML='<div class="msg-bubble"><b>File: '+file.name+'</b><br><img src="'+file.dataUrl+'" style="width:100%;border-radius:12px;margin-top:8px"></div>';}
+  else if(file.type.indexOf('audio')!==-1){d.innerHTML='<div class="msg-bubble">Voice Note:<br><b>'+file.name+'</b><br><audio controls src="'+file.dataUrl+'" style="width:100%;margin-top:8px"></audio></div>';}
+  else if(file.type.indexOf('video')!==-1){d.innerHTML='<div class="msg-bubble">Video:<br><b>'+file.name+'</b><br><video controls src="'+file.dataUrl+'" style="width:100%;border-radius:12px;margin-top:8px"></video></div>';}
+  else{d.innerHTML='<div class="msg-bubble">Attached file:<br><b>'+file.name+'</b><br><span style="font-size:12px;opacity:.7">'+file.type+'</span>'+(file.text?'<br><br><span style="font-size:13px">'+file.text.substring(0,500)+'</span>':'')+'</div>';}
+  b.appendChild(d);window.scrollTo(0,document.body.scrollHeight);
+}
+function loadVoices(){if(!window.speechSynthesis)return;voices=window.speechSynthesis.getVoices();var s=document.getElementById('voiceSelect');if(!s)return;s.innerHTML='';voices.forEach(function(v,i){var o=document.createElement('option');o.value=i;o.textContent=v.name+' ('+v.lang+')';s.appendChild(o)})}
+if(window.speechSynthesis){window.speechSynthesis.onvoiceschanged=loadVoices;loadVoices()}
+function speak(t){if(!window.speechSynthesis)return;window.speechSynthesis.cancel();var c=t.replace(/[*#_]/g,'').substring(0,1000);var u=new SpeechSynthesisUtterance(c);var s=document.getElementById('voiceSelect');if(voices[s.value])u.voice=voices[s.value];u.rate=parseFloat(document.getElementById('speedRange').value)||1;u.lang='en-US';window.speechSynthesis.speak(u)}
+function setupRecognition(){var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('Use Chrome for voice!');return null}var r=new SR();r.lang='en-US';r.onstart=function(){isListening=true;document.getElementById('micBtn').style.background='#ff0055';document.getElementById('micBtn').style.color='#fff'};r.onresult=function(e){handleUserInput(e.results[0][0].transcript)};r.onend=function(){isListening=false;document.getElementById('micBtn').style.background='#fff';document.getElementById('micBtn').style.color='#000'};r.onerror=function(){isListening=false};return r}
+function toggleListen(){if(isListening){if(recognition)recognition.stop();return}if(!recognition)recognition=setupRecognition();if(recognition){try{recognition.start()}catch(e){setTimeout(function(){recognition.start()},300)}}}
+function addBubble(t,w){var b=document.getElementById('chatBox');var d=document.createElement('div');d.className='msg-row '+(w==='me'?'me':'ai');var bb=document.createElement('div');bb.className='msg-bubble';bb.textContent=t;d.appendChild(bb);b.appendChild(d);window.scrollTo(0,document.body.scrollHeight);if(w==='ai'){try{localStorage.setItem('wavy_ai_last',JSON.stringify(t))}catch(e){}}}
+function addImageBubble(p,u){var b=document.getElementById('chatBox');var d=document.createElement('div');d.className='msg-row ai';d.innerHTML='<div class="msg-bubble">Here is your image: "'+p+'"<img src="'+u+'" style="width:100%;border-radius:12px;margin-top:8px"><br><a href="'+u+'" download="wavy.jpg" style="color:#0082ff">Download</a></div>';b.appendChild(d);window.scrollTo(0,document.body.scrollHeight)}
+function generateImage(p){if(!p||!p.trim())return alert('Describe image!');p=p.trim();var e=p+', vibrant, high quality, detailed';var seed=Math.floor(Math.random()*1000000);var url='https://image.pollinations.ai/prompt/'+encodeURIComponent(e)+'?width=1024&height=1024&seed='+seed+'&nologo=true';addBubble('Drawing: "'+p+'" ...','ai');document.getElementById('typing').classList.add('show');var im=new Image();im.onload=function(){var rs=document.querySelectorAll('#chatBox .msg-row');if(rs.length)rs[rs.length-1].remove();addImageBubble(p,url);speak('Here is your image! '+p);document.getElementById('typing').classList.remove('show');document.getElementById('generatedImageArea').innerHTML='<img src="'+url+'" style="width:100%;border-radius:12px;margin-top:10px">'};im.onerror=function(){addBubble('Image failed - Need data for image generation.','ai');document.getElementById('typing').classList.remove('show')};im.src=url}
+function generateImageFromInput(cp){var pr=cp||document.getElementById('imagePromptInput').value.trim()||document.getElementById('textInput').value.trim();if(!pr)return alert('Type what to draw!');generateImage(pr)}
+function handleUserInput(t){
+  var l=(t||'').toLowerCase();
+  if(attachedFiles.length){attachedFiles.forEach(function(f){addFileBubble(f)});var filesToSend=attachedFiles.slice();attachedFiles=[];renderFilePreview();if(currentMode==='image'||l.indexOf('draw')!==-1){generateImage(t||'Describe this file')}else{askAIWithFiles(t||'What is in this file? Explain it!',filesToSend)}return;}
+  if(currentMode==='image'||l.indexOf('draw')!==-1||l.indexOf('picture')!==-1||l.indexOf('image')!==-1){var cp=t.replace(/draw|generate image|create image|picture of|paint/gi,'').trim();if(!cp)cp=t;addBubble(t,'me');generateImage(cp)}else{askAI(t)}
+}
+function sendText(){var inp=document.getElementById('textInput');var t=inp.value.trim();if(!t && !attachedFiles.length) return;inp.value='';inp.style.height='auto';document.getElementById('sendBtn').innerHTML='<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:none;stroke:#000;stroke-width:2"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';handleUserInput(t);}
+async function askAIWithFiles(ut,files){
+  addBubble(ut,'me');
+  if(!navigator.onLine||!GEMINI_API_KEY){var desc='I see your file(s):\n';files.forEach(function(f){desc+='File: '+f.name+' ('+f.type+')\n';if(f.text)desc+='Content: '+f.text.substring(0,500)+'\n';});desc+='\nYou are offline / no AI key, so I cannot use Gemini now. File is saved! When you get data, ask again and I will analyze it!';addBubble(desc,'ai');return;}
+  document.getElementById('typing').classList.add('show');
+  try{
+    var parts=[{text:ut+'\n\nAnalyze the attached files.'}];
+    files.forEach(function(f){if(f.type.indexOf('image')!==-1 && f.dataUrl.indexOf('base64,')!==-1){var base64=f.dataUrl.split('base64,')[1];parts.push({inline_data:{mime_type:f.type,data:base64}});}else if(f.text){parts.push({text:'File '+f.name+' content:\n'+f.text.substring(0,4000)});}});
+    var r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+(cachedModel||'gemini-3.8-flash')+':generateContent?key='+encodeURIComponent(GEMINI_API_KEY),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:parts}],generationConfig:{temperature:0.8,maxOutputTokens:600}})});
+    var d=await r.json();var ans=d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts[0]?d.candidates[0].content.parts[0].text:'Could not read file';addBubble(ans,'ai');speak(ans);
+  }catch(e){addBubble('Error reading file: '+e.message,'ai')}
+  document.getElementById('typing').classList.remove('show');
+}
+async function askAI(ut){
+  addBubble(ut,'me');
+  if(!GEMINI_API_KEY||GEMINI_API_KEY==='PASTE_YOUR_GEMINI_KEY_HERE'){addBubble('AI key not set. Put your key in js/settings.js - Search for WAVY_SETTINGS','ai');return}
+  if(!navigator.onLine){addBubble('You are offline (no data). Connect to data/WiFi to use AI. Your message is saved!','ai');return}
+  document.getElementById('typing').classList.add('show');
+  chatHistory.push({role:'user',parts:[{text:ut}]});if(chatHistory.length>12)chatHistory=chatHistory.slice(-12);
+  var ans=null,last='';var tries=[cachedModel||'gemini-3.8-flash','gemini-3.8-flash','gemini-3-flash'];tries=tries.filter(function(v,i,a){return a.indexOf(v)===i});
+  for(var i=0;i<tries.length;i++){var m=tries[i];try{var sysPrompt='You are Wavy AI, friendly helper for Kenya. Be short, helpful, fun.';try{if(typeof WAVY_SETTINGS!=='undefined' && WAVY_SETTINGS.ai && WAVY_SETTINGS.ai.systemPrompt) sysPrompt=WAVY_SETTINGS.ai.systemPrompt;}catch(e){}var r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+m+':generateContent?key='+encodeURIComponent(GEMINI_API_KEY),{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':GEMINI_API_KEY},body:JSON.stringify({system_instruction:{parts:[{text:sysPrompt}]},contents:chatHistory,generationConfig:{temperature:0.8,maxOutputTokens:400}})});var d=await r.json();if(d.error)throw new Error(d.error.message);ans=d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts[0]?d.candidates[0].content.parts[0].text:null;if(ans){cachedModel=m;localStorage.setItem('wavy_model',m);document.getElementById('modelLabel').textContent=m;break}}catch(e){last=e.message;continue}}
+  document.getElementById('typing').classList.remove('show');
+  if(ans){chatHistory.push({role:'model',parts:[{text:ans}]});addBubble(ans,'ai');speak(ans)}else{addBubble('Error: '+last,'ai')}
+}
+window.addEventListener('load',function(){
+  try{var n=localStorage.getItem('wavyName');if(n) document.getElementById('menuUser').textContent='Hi '+n+'!';}catch(e){}
+  var ap=localStorage.getItem('wavy_ai_auto_prompt'),am=localStorage.getItem('wavy_ai_auto_mode');
+  if(ap){localStorage.removeItem('wavy_ai_auto_prompt');localStorage.removeItem('wavy_ai_auto_mode');if(am==='image'){setMode('image');setTimeout(function(){generateImage(ap)},500)}else{setTimeout(function(){askAI(ap)},500)}}
+  else{addBubble('Hi! I am Wavy AI\n\nTap + to upload photo, document, voice note or video - I will read it!','ai')}
+});
+document.addEventListener('click',function(e){var m=document.getElementById('uploadMenu');if(m.classList.contains('show') && !e.target.closest('.plus-btn') && !e.target.closest('.upload-menu')) closeUploadMenu();});
+</script>
+</body>
+</html>

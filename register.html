@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wavy - Register</title>
+<link rel="stylesheet" href="css/style.css">
+<!-- Firebase FIRST - before auth.js -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<div class="container" style="padding-top:50px">
+<div class="card center">
+<h1>Wavy<span style="color:#00e5ff">🌊</span></h1>
+<p class="muted">Join Wavy - It's free!</p><br>
+<input id="rname" placeholder="Your Name / Username">
+<input id="remail" type="email" placeholder="Email">
+<input id="rpass" type="password" placeholder="Create Password">
+<button class="btn" onclick="wavyRegister(document.getElementById('rname').value, document.getElementById('remail').value, document.getElementById('rpass').value)">Create Account</button><br><br>
+<button class="btn btn-white" onclick="wavyGoogle()">Sign Up with Google</button><br><br>
+<p class="muted">Already have account? <a href="login.html">Login</a></p>
+</div>
+</div>
+<script src="js/auth.js"></script>
+</body>
+</html>

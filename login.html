@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wavy - Log In</title>
+<link rel="stylesheet" href="css/style.css">
+<!-- Firebase FIRST -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+// ===== FIREBASE CONFIG - INLINE - NO MORE js/settings.js DEPENDENCY =====
+// 👇 PASTE YOUR REAL CONFIG HERE FROM Firebase Console -> Project Settings
+var WAVY_CONFIG = {
+  apiKey: "PASTE_YOUR_REAL_APIKEY_HERE",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// INIT - SAFE, WILL NOT CRASH
+var auth = null;
+var db = null;
+try{
+  if(typeof firebase !== 'undefined'){
+    if(!firebase.apps.length){ firebase.initializeApp(WAVY_CONFIG); }
+    auth = firebase.auth();
+    db = firebase.firestore();
+    console.log("Wavy Firebase OK ✅");
+  } else {
+    console.log("Firebase CDN failed to load - check internet!");
+  }
+}catch(e){
+  console.log("Firebase error:", e);
+  alert("Firebase Config Error: "+e.message+"\n\nPaste your REAL apiKey in login.html - search for PASTE_YOUR_REAL_APIKEY_HERE");
+}
+</script>
+<script src="js/auth.js"></script>
+</head>
+<body>
+<div class="login-wrap">
+  <div class="wavy-logo-big">W</div>
+  <h2 style="text-align:center;font-size:22px">Welcome to Wavy 🌊</h2>
+  <p class="muted center" style="margin:6px 0 18px">Tap your account to log in</p>
+
+  <div id="savedList"></div>
+  <div id="noSaved" class="center muted" style="padding:10px 0">No saved accounts yet.<br>Login once and we will save you here!</div>
+
+  <div style="display:flex;gap:8px;justify-content:center;margin:10px 0">
+    <button id="tabLogin" class="btn btn-outline" style="width:auto;padding:10px 22px" onclick="showTab('login')">Log In</button>
+    <button id="tabRegister" class="btn" style="width:auto;padding:10px 22px" onclick="showTab('register')">Register</button>
+  </div>
+
+  <div id="quickPassBox" style="display:none" class="form-card center">
+    <div class="avatar" id="quickAvatar" style="margin:0 auto">W</div>
+    <h3 id="quickPassTitle" style="margin:10px 0 4px">Log in as</h3>
+    <p class="muted" id="quickPassEmail"></p>
+    <input type="password" id="quickPassInput" placeholder="Password">
+    <label class="remember-row" style="justify-content:center"><input type="checkbox" id="quickRemember" checked> Remember me</label>
+    <button class="btn" onclick="wavyQuickLoginWithPass()">Log In</button>
+    <p class="muted" style="margin-top:10px;cursor:pointer" onclick="cancelQuickLogin()">Cancel</p>
+  </div>
+
+  <div id="loginForm" class="form-card">
+    <input id="loginName" placeholder="Christopher mutarii">
+    <input id="loginEmail" type="email" placeholder="chrismutarii662@gmail.com">
+    <input id="loginPass" type="password" placeholder="••••••••">
+    <label class="remember-row"><input type="checkbox" id="loginRemember" checked> Remember me on this phone</label>
+    <button class="btn" onclick="doLogin()">Log In</button>
+    <p class="center" style="margin-top:12px"><a href="forgot-password-code.html" style="color:#0082ff;font-size:14px">Forgot password?</a></p>
+  </div>
+
+  <div id="registerForm" class="form-card" style="display:none">
+    <input id="regName" placeholder="Full Name">
+    <input id="regEmail" type="email" placeholder="Email">
+    <input id="regPass" type="password" placeholder="Password (6+ chars)">
+    <label class="remember-row"><input type="checkbox" id="regRemember" checked> Remember me</label>
+    <button class="btn" onclick="doRegister()">Create Account</button>
+  </div>
+
+  <button class="btn btn-outline" style="margin-top:12px" onclick="wavyGoogle()">🔍 Continue with Google</button>
+  <div class="meta-logo">Wavy</div>
+</div>
+
+<script>
+function showTab(t){
+  document.getElementById('loginForm').style.display = t==='login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = t==='register' ? 'block' : 'none';
+  document.getElementById('tabLogin').className = t==='login' ? 'btn' : 'btn btn-outline';
+  document.getElementById('tabLogin').style.width='auto';
+  document.getElementById('tabLogin').style.padding='10px 22px';
+  document.getElementById('tabRegister').className = t==='register' ? 'btn' : 'btn btn-outline';
+  document.getElementById('tabRegister').style.width='auto';
+  document.getElementById('tabRegister').style.padding='10px 22px';
+}
+function renderSavedAccounts(){
+  var list=[];
+  try{ list=JSON.parse(localStorage.getItem('wavy_saved_accounts')||'[]'); }catch(e){ list=[]; }
+  var box=document.getElementById('savedList');
+  var no=document.getElementById('noSaved');
+  if(!list.length){ box.innerHTML=''; no.style.display='block'; return; }
+  no.style.display='none';
+  var h='';
+  list.forEach(function(a){
+    h+='<div class="saved-card"><div class="avatar">'+(a.name||'W')[0].toUpperCase()+'</div><div style="text-align:left"><b>'+a.name+'</b><br><span class="muted">'+a.email+'</span></div><span class="arrow" onclick="wavyQuickLogin(\''+a.email+'\')">›</span><span class="remove" onclick="event.stopPropagation();removeSavedAccount(\''+a.email+'\')">✕</span></div>';
+  });
+  box.innerHTML=h;
+}
+async function doLogin(){
+  if(!auth) return alert('Firebase not loaded! Paste REAL apiKey in login.html - search PASTE_YOUR_REAL_APIKEY_HERE');
+  var name=document.getElementById('loginName').value.trim();
+  var email=document.getElementById('loginEmail').value.trim();
+  var pass=document.getElementById('loginPass').value;
+  if(!email || !pass) return alert('Enter email + password!');
+  if(name) localStorage.setItem('wavyName', name);
+  await wavyLogin(email, pass, document.getElementById('loginRemember').checked, name);
+}
+async function doRegister(){
+  if(!auth) return alert('Firebase not loaded! Paste REAL apiKey!');
+  var name=document.getElementById('regName').value.trim();
+  var email=document.getElementById('regEmail').value.trim();
+  var pass=document.getElementById('regPass').value;
+  await wavyRegister(name, email, pass, document.getElementById('regRemember').checked);
+}
+renderSavedAccounts();
+// Pre-fill your account from screenshot for testing
+document.getElementById('loginName').value='Christopher mutarii';
+document.getElementById('loginEmail').value='chrismutarii662@gmail.com';
+</script>
+</body>
+</html>

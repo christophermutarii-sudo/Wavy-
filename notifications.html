@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wavy - Notifications</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<div class="top"><div class="logo">Wavy<span>🌊</span> Notifications</div><a href="index.html">🏠</a></div>
+<div class="container">
+  <div class="card center"><b>🔔 Your Activity</b><p class="muted">Likes, new posts, new followers will show here</p></div>
+  <div id="notifFeed"></div>
+</div>
+<div class="bottom-nav"><a href="index.html">🏠</a><a href="reels.html">🎬</a><a href="stories.html">📖</a><a href="notifications.html" class="active">🔔</a><a href="profile.html">👤</a></div>
+<script src="js/auth.js"></script>
+<script>
+db.collection("posts").orderBy("createdAt","desc").onSnapshot(snap=>{
+  const feed = document.getElementById('notifFeed'); feed.innerHTML='';
+  if(snap.empty) feed.innerHTML='<div class="card center">No notifications yet.<br><span class="muted">Post something and your friends will see it here!</span></div>';
+  snap.forEach(d=>{
+    const p = d.data();
+    feed.innerHTML += `<div class="card" style="display:flex;gap:12px;align-items:center"><div class="avatar">${(p.name||'W')[0].toUpperCase()}</div><div><b>${p.name}</b> posted something new 🌊<br><span class="muted">${p.text}</span></div></div>`;
+  });
+});
+</script>
+</body>
+</html>

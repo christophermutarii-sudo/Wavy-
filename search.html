@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wavy - Search</title>
+<link rel="stylesheet" href="css/style.css">
+<!-- THIS IS THE FIX - MUST BE FIRST, BEFORE auth.js -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<div class="top">
+  <div class="logo">Wavy<span>🌊</span></div>
+  <div class="top-links"><a href="index.html">🏠 Home</a><a href="chat.html">💬 Chat</a></div>
+</div>
+
+<div class="container">
+  <div class="card">
+    <b style="font-size:18px">🔍 Search People</b><br><br>
+    <input id="searchInput" placeholder="Type a name... e.g. Felix" oninput="doSearch()">
+    <p class="muted">Search by name or email</p>
+  </div>
+  <div class="card"><b>All People on Wavy</b></div>
+  <div id="peopleList"></div>
+</div>
+
+<div class="bottom-nav">
+  <a href="index.html">🏠</a><a href="reels.html">🎬</a><a href="stories.html">📖</a><a href="notifications.html">🔔</a><a href="profile.html">👤</a>
+</div>
+
+<script src="js/auth.js"></script>
+<script>
+// NO import, NO const auth here - auth already comes from js/auth.js
+let allPeople = [];
+
+db.collection("posts").orderBy("createdAt","desc").onSnapshot(snap=>{
+  const seen = {};
+  allPeople = [];
+  snap.forEach(d=>{
+    const p = d.data();
+    if(!seen[p.email]){
+      seen[p.email] = true;
+      allPeople.push(p);
+    }
+  });
+  showPeople(allPeople);
+});
+
+function showPeople(list){
+  const el = document.getElementById('peopleList');
+  if(list.length===0){
+    el.innerHTML = '<div class="card center">No people yet.<br><span class="muted">Post something on the Feed first, then you will appear here.</span></div>';
+  } else {
+    el.innerHTML = list.map(p=>`
+    <div class="card" style="display:flex;gap:12px;align-items:center">
+      <div class="avatar">${(p.name||'W')[0].toUpperCase()}</div>
+      <div style="flex:1"><b>${p.name}</b><br><span class="muted">${p.email}</span></div>
+      <button class="btn" style="width:auto;padding:8px 18px" onclick="alert('Follow ${p.name} - Coming soon!')">Follow</button>
+    </div>`).join('');
+  }
+}
+function doSearch(){
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const filtered = allPeople.filter(p=> (p.name||'').toLowerCase().includes(q) || (p.email||'').toLowerCase().includes(q));
+  showPeople(filtered);
+}
+</script>
+</body>
+</html>

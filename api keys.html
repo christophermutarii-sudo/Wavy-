@@ -1,0 +1,37 @@
+// Wavy Auth - SAVES USERS
+const firebaseConfig = {
+  apiKey: "AIzaSyC0uh8mYqimA2u4rZTFCqcIzrewhUBQP40",
+  authDomain: "wavy-bf964.firebaseapp.com",
+  projectId: "wavy-bf964",
+  storageBucket: "wavy-bf964.firebasestorage.app",
+  messagingSenderId: "919371151652",
+  appId: "1:919371151652:web:18e1abbecf427fcc749bb1"
+};
+if(!firebase.apps.length){ firebase.initializeApp(firebaseConfig); }
+const auth = firebase.auth();
+const db = firebase.firestore();
+function saveUserToList(user, name){
+  if(!user) return;
+  const userName = name || user.displayName || localStorage.getItem('wavyName') || user.email.split('@')[0];
+  localStorage.setItem('wavyName', userName);
+  db.collection("users").doc(user.uid).set({
+    name: userName, email: user.email, uid: user.uid,
+    pic: localStorage.getItem('wavyPic') || '',
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, {merge: true});
+}
+auth.onAuthStateChanged(user=>{ if(user) saveUserToList(user); });
+function wavyRegister(name, email, password){
+  auth.createUserWithEmailAndPassword(email, password).then(cred=>{
+    saveUserToList(cred.user, name);
+    cred.user.updateProfile({displayName: name}).then(()=>{ alert('Welcome to Wavy, '+name+'! 🌊'); location.href = 'index.html'; });
+  }).catch(e=> alert(e.message));
+}
+function wavyLogin(email, password){
+  auth.signInWithEmailAndPassword(email, password).then(cred=>{ saveUserToList(cred.user); location.href = 'index.html'; }).catch(e=> alert(e.message));
+}
+function wavyGoogle(){
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider).then(res=>{ saveUserToList(res.user); location.href = 'index.html'; }).catch(e=> alert(e.message));
+}
+function wavyLogout(){ auth.signOut().then(()=> location.href = 'login.html'); }rhis is the current one

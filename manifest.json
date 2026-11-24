@@ -1,0 +1,9 @@
+{
+  "name": "Wavy",
+  "short_name": "Wavy",
+  "start_url": "login.html",
+  "display": "standalone",
+  "background_color": "#0a0a12",
+  "theme_color": "#00e5ff",
+  "icons": []
+}

@@ -1,0 +1,429 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SECURE TRACE v12 - Meru</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#0f172a;color:#fff;padding-bottom:90px}
+body.light{background:#f1f5f9;color:#111}
+body.light .card,body.light .stat{background:#fff;color:#111;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+body.light .bottom-nav{background:#fff;border-top:1px solid #e2e8f0}
+body.light .bottom-nav button{color:#64748b}
+body.light .person{background:#f1f5f9}
+.hidden{display:none!important}
+.icon{width:22px;height:22px;vertical-align:middle;flex-shrink:0}
+.icon-lg{width:48px;height:48px}
+.icon-sm{width:16px;height:16px}
+.topbar{background:#0ea5e9;padding:14px 15px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
+.topbar b{display:flex;align-items:center;gap:8px}
+.topbar span{font-size:11px;background:#fff;color:#0ea5e9;padding:4px 8px;border-radius:20px;display:flex;gap:4px;align-items:center}
+.login-wrap{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:15px}
+.login-card{background:#fff;color:#111;width:100%;max-width:400px;border-radius:20px;padding:22px;text-align:center}
+input,select,textarea{width:100%;padding:12px;margin:6px 0;border:1px solid #cbd5e1;border-radius:10px;color:#111}
+button{width:100%;padding:13px;border:none;border-radius:12px;font-weight:bold;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-blue{background:#0ea5e9;color:#fff}.btn-dark{background:#0f172a;color:#fff}.btn-green{background:#22c55e;color:#fff}.btn-red{background:#ef4444;color:#fff}.btn-orange{background:#f97316;color:#fff}.btn-purple{background:#a855f7;color:#fff}.btn-pink{background:#ec4899;color:#fff}.btn-gray{background:#e2e8f0;color:#111}
+.container{padding:15px;max-width:640px;margin:0 auto}
+.card{background:#1e293b;padding:15px;border-radius:15px;margin-bottom:12px}
+.card h3{display:flex;align-items:center;gap:8px}
+.stat-row{display:flex;gap:8px;flex-wrap:wrap}.stat{flex:1;min-width:70px;background:#1e293b;padding:13px;border-radius:15px;text-align:center}.stat b{font-size:19px;display:block}.stat small{color:#94a3b8}
+.badge{padding:4px 8px;border-radius:20px;font-size:11px;font-weight:bold;display:inline-flex;align-items:center;gap:4px}.open{background:#ef4444}.invest{background:#eab308;color:#000}.solved{background:#22c55e}
+.person{display:flex;gap:10px;align-items:center;background:#334155;padding:10px;border-radius:12px;margin:8px 0}.person img{width:50px;height:50px;border-radius:50%;object-fit:cover}
+iframe{width:100%;height:260px;border:none;border-radius:15px}
+.alert{background:#fef3c7;color:#92400e;padding:12px;border-radius:12px;margin:8px 0;display:none;font-size:13px;font-weight:bold}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#1e293b;border-top:1px solid #334155;display:flex;justify-content:space-around;padding:6px 4px 10px;z-index:100;overflow-x:auto;scrollbar-width:none}
+.bottom-nav button{width:auto;min-width:56px;padding:6px 6px;background:transparent;color:#94a3b8;flex-direction:column;font-size:10px;gap:2px;margin:0;border-radius:10px;flex:1}
+.bottom-nav button.active{background:#0ea5e9;color:#fff}
+.bottom-nav button svg{width:24px;height:24px}
+.bottom-nav .dot{position:absolute;top:2px;right:12px;width:8px;height:8px;background:#ef4444;border-radius:50%}
+.nav-wrap{position:relative}
+.sos-float{position:fixed;bottom:100px;right:16px;width:60px;height:60px;border-radius:50%;background:#ef4444;color:#fff;box-shadow:0 0 20px #ef4444;z-index:99;border:3px solid #fff;display:flex;align-items:center;justify-content:center}
+.pay-box{background:#052e16;border:2px solid #22c55e;padding:15px;border-radius:15px;margin-top:10px}
+video{width:100%;border-radius:12px;background:#000}
+.chat-box{height:260px;overflow-y:auto;background:#0f172a;padding:10px;border-radius:12px;display:flex;flex-direction:column;gap:8px}
+body.light .chat-box{background:#e2e8f0}
+.msg{padding:10px 12px;border-radius:12px;max-width:85%;font-size:13px}.msg.me{background:#0ea5e9;align-self:flex-end;color:#fff}.msg.other{background:#334155;align-self:flex-start}
+body.light .msg.other{background:#cbd5e1;color:#111}
+.qr-box{background:#fff;color:#111;padding:15px;border-radius:15px;text-align:center}
+.report-box{background:#fff;color:#111;padding:15px;border-radius:12px;font-size:13px;white-space:pre-line}
+.id-card{background:#fff;color:#111;border-radius:16px;overflow:hidden;max-width:360px;margin:0 auto}
+.id-top{background:#0ea5e9;color:#fff;padding:12px;text-align:center}
+.id-body{display:flex;gap:12px;padding:14px}.id-body img{width:90px;height:110px;object-fit:cover;border-radius:10px;border:2px solid #0ea5e9}.id-body small{color:#64748b}
+.roster-day{background:#0f172a;padding:10px;border-radius:10px;margin:6px 0;display:flex;justify-content:space-between;align-items:center}
+body.light .roster-day{background:#f1f5f9}
+.admin-row{display:flex;gap:6px;flex-wrap:wrap}.admin-row button{width:auto;padding:7px 10px;font-size:12px;margin:0}
+.recent-user{display:flex;gap:10px;align-items:center;background:#f1f5f9;padding:10px;border-radius:12px;margin:6px 0;cursor:pointer;text-align:left}
+.recent-user img{width:44px;height:44px;border-radius:50%;object-fit:cover}
+.recent-user b{font-size:14px}
+.code-inputs{display:flex;gap:8px;justify-content:center;margin:12px 0}
+.code-inputs input{width:44px;height:52px;text-align:center;font-size:22px;font-weight:bold;padding:0}
+.link{color:#0ea5e9;cursor:pointer;font-size:13px;font-weight:bold}
+.err{color:#ef4444;font-size:13px;margin:6px 0;display:none}
+.success{color:#16a34a;font-size:13px;margin:6px 0;display:none}
+@media print{ body{padding-bottom:0} .no-print{display:none!important} }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z"/><path d="M9 12l2 2 4-4"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4 3.5-6 8-6s8 2 8 6"/></symbol>
+<symbol id="i-id" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="3"/><circle cx="8" cy="11" r="2.5"/><path d="M4 18c0-2 1.8-3 4-3s4 1 4 3M14 8h6M14 12h6M14 16h4"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></symbol>
+<symbol id="i-cam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h4l2-2h6l2 2h4v13H3z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8 8 0 0 1-11.5 7L4 21l2.5-5.5A8 8 0 1 1 21 11.5z"/><path d="M8 10h8M8 13h5"/></symbol>
+<symbol id="i-ticket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4z"/><path d="M13 7v2M13 11v2M13 15v2"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></symbol>
+<symbol id="i-bike" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="18" r="3"/><circle cx="19" cy="18" r="3"/><path d="M5 18l4-8h5l3 4 2-4M9 10l2-4h4"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+<symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></symbol>
+<symbol id="i-sos" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16v.5"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l5 5 11-11"/></symbol>
+<symbol id="i-money" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 10h.5M18 14h.5"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.5A9 9 0 1 1 11.5 3a7 7 0 0 0 9.5 9.5z"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
+<symbol id="i-print" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v6H6z"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4v18h-4M10 17l5-5-5-5M15 12H3"/></symbol>
+<symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="3"/></symbol>
+</defs></svg>
+
+<!-- ===== LOGIN / REGISTER / FORGOT ===== -->
+<div id="loginPage" class="login-wrap no-print">
+  <div class="login-card">
+    <svg class="icon-lg" style="color:#0ea5e9"><use href="#i-shield"/></svg>
+    <h1 style="color:#0ea5e9">SECURE TRACE v12</h1>
+    <p style="font-size:13px;color:#64748b">Meru • Real Login • Remember Me</p>
+    <div id="netStatus" style="background:#dcfce7;color:#166534;padding:8px;border-radius:10px;font-size:12px;font-weight:bold">ONLINE - Meru</div>
+
+    <!-- RECENT USERS -->
+    <div id="recentBox"></div>
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm">
+      <input id="u" placeholder="Username or Phone">
+      <div style="position:relative"><input id="p" type="password" placeholder="Password"><span onclick="togglePass('p')" style="position:absolute;right:12px;top:14px;cursor:pointer;color:#64748b"><svg class="icon-sm"><use href="#i-eye"/></svg></span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:4px 0">
+        <label style="font-size:13px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="rememberMe" checked style="width:auto;margin:0"> Remember me</label>
+        <span class="link" onclick="showAuth('forgot')">Forgot Password?</span>
+      </div>
+      <p id="loginErr" class="err"></p>
+      <button class="btn-blue" onclick="doLogin()"><svg class="icon"><use href="#i-check"/></svg> LOGIN</button>
+      <div class="pay-box"><b style="color:#22c55e;display:flex;gap:6px;justify-content:center"><svg class="icon-sm"><use href="#i-money"/></svg> M-PESA - Till 123456</b><input id="mpesaCode" placeholder="Code e.g. 1234"><button class="btn-green" onclick="verifyPay()"><svg class="icon"><use href="#i-check"/></svg> VERIFY & LOGIN</button><button class="btn-dark" onclick="demoPay()">Demo 1234</button></div>
+      <p style="font-size:13px;margin-top:12px">No account? <span class="link" onclick="showAuth('register')">Create Account</span></p>
+      <p style="font-size:11px;color:#94a3b8;margin-top:8px">Demo: boss / meru123</p>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="registerForm" class="hidden">
+      <h3 style="margin:8px 0">Create Account</h3>
+      <input id="rName" placeholder="Full Name e.g. John Meru">
+      <input id="rUser" placeholder="Username e.g. john">
+      <input id="rPhone" placeholder="Phone e.g. 0712345678">
+      <input id="rTown" placeholder="Town e.g. Meru Town">
+      <div style="position:relative"><input id="rPass" type="password" placeholder="Password min 6 chars"><span onclick="togglePass('rPass')" style="position:absolute;right:12px;top:14px;cursor:pointer;color:#64748b"><svg class="icon-sm"><use href="#i-eye"/></svg></span></div>
+      <input id="rPass2" type="password" placeholder="Confirm Password">
+      <p id="regErr" class="err"></p><p id="regOk" class="success"></p>
+      <button class="btn-green" onclick="doRegister()"><svg class="icon"><use href="#i-user"/></svg> CREATE ACCOUNT</button>
+      <p style="font-size:13px;margin-top:10px">Already have account? <span class="link" onclick="showAuth('login')">Login</span></p>
+    </div>
+
+    <!-- FORGOT FORM STEP 1 -->
+    <div id="forgotForm" class="hidden">
+      <h3 style="margin:8px 0">Forgot Password</h3>
+      <p style="font-size:13px;color:#64748b">Enter your username. We will give you a 6-digit code.</p>
+      <input id="fUser" placeholder="Username">
+      <p id="forgotErr" class="err"></p>
+      <button class="btn-blue" onclick="sendResetCode()"><svg class="icon"><use href="#i-mail"/></svg> SEND CODE</button>
+      <div id="demoCodeBox" class="hidden" style="background:#dcfce7;padding:10px;border-radius:10px;margin-top:10px"><b style="color:#166534">DEMO CODE: <span id="demoCode" style="font-size:22px;letter-spacing:4px"></span></b><p style="font-size:11px;color:#64748b">In real app this comes by SMS/Email</p></div>
+      <div id="forgotStep2" class="hidden">
+        <div class="code-inputs">
+          <input maxlength="1" id="fc0" inputmode="numeric" oninput="moveCode(this,1)"><input maxlength="1" id="fc1" inputmode="numeric" oninput="moveCode(this,2)"><input maxlength="1" id="fc2" inputmode="numeric" oninput="moveCode(this,3)"><input maxlength="1" id="fc3" inputmode="numeric" oninput="moveCode(this,4)"><input maxlength="1" id="fc4" inputmode="numeric" oninput="moveCode(this,5)"><input maxlength="1" id="fc5" inputmode="numeric" oninput="moveCode(this,6)">
+        </div>
+        <input id="fNewPass" type="password" placeholder="New Password min 6">
+        <input id="fNewPass2" type="password" placeholder="Confirm New Password">
+        <button class="btn-green" onclick="doResetPassword()"><svg class="icon"><use href="#i-lock"/></svg> RESET PASSWORD</button>
+      </div>
+      <p style="font-size:13px;margin-top:10px"><span class="link" onclick="showAuth('login')">Back to Login</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+  <div class="topbar no-print"><b><svg class="icon"><use href="#i-shield"/></svg> SECURE TRACE v12</b><span id="topNet"><svg class="icon-sm"><use href="#i-check"/></svg> <span id="topUser">MERU • BOSS</span></span></div>
+  <div class="container">
+    <div id="dash" class="no-print">
+      <div class="stat-row">
+        <div class="stat"><svg class="icon" style="color:#0ea5e9"><use href="#i-user"/></svg><b id="cPersons">0</b><small>Persons</small></div>
+        <div class="stat"><svg class="icon" style="color:#22c55e"><use href="#i-bike"/></svg><b id="cBoda">0</b><small>Boda</small></div>
+        <div class="stat"><svg class="icon" style="color:#f97316"><use href="#i-folder"/></svg><b id="cCases">0</b><small>Cases</small></div>
+        <div class="stat"><svg class="icon" style="color:#a855f7"><use href="#i-ticket"/></svg><b id="cVisitors">0</b><small>Visitors</small></div>
+        <div class="stat"><svg class="icon" style="color:#ec4899"><use href="#i-cal"/></svg><b id="cDuty">0</b><small>On Duty</small></div>
+      </div>
+      <div class="card"><h3><svg class="icon"><use href="#i-user"/></svg> Welcome <span id="welcomeName">Boss</span> - Meru</h3><p style="font-size:13px" id="todayDuty">Checking...</p>
+      <button class="btn-pink" onclick="show('roster')"><svg class="icon"><use href="#i-cal"/></svg> Who Is On Duty?</button>
+      <button class="btn-purple" onclick="show('idcard')"><svg class="icon"><use href="#i-id"/></svg> Make ID Card</button>
+      <button class="btn-green" onclick="show('gate')"><svg class="icon"><use href="#i-ticket"/></svg> Visitor Pass</button>
+      <button class="btn-blue" onclick="show('report')"><svg class="icon"><use href="#i-chart"/></svg> Daily Report</button>
+      <button class="btn-orange" onclick="show('admin')"><svg class="icon"><use href="#i-gear"/></svg> Admin Panel</button>
+      <button class="btn-red" onclick="sendSOS()"><svg class="icon"><use href="#i-sos"/></svg> SEND SOS</button>
+      <button class="btn-dark" onclick="logout()"><svg class="icon"><use href="#i-logout"/></svg> Logout</button></div>
+      <div class="card"><h3><svg class="icon"><use href="#i-search"/></svg> Quick Search</h3><input id="qSearch" placeholder="Search name, plate..." oninput="renderAll()"><div id="searchOut"></div>
+      <div style="display:flex;gap:8px"><button class="btn-green" style="flex:1" onclick="exportExcel()"><svg class="icon"><use href="#i-download"/></svg> Export Excel</button><button class="btn-dark" style="flex:1" onclick="exportPDF()"><svg class="icon"><use href="#i-print"/></svg> Export PDF</button></div></div>
+    </div>
+    <div id="person" class="hidden no-print"><div class="card"><h3><svg class="icon"><use href="#i-user"/></svg> Register Person</h3><div id="dupAlert" class="alert">DUPLICATE!</div><input id="pName" placeholder="Full Name" oninput="checkDup()"><input id="pId" placeholder="ID / Phone"><select id="pTown"><option>Meru Town</option><option>Nkubu</option><option>Maua</option><option>Timau</option><option>Githongo</option><option>Mikinduri</option></select><input id="pPhoto" type="file" accept="image/*" onchange="previewPhoto(this,'pPrev')"><img id="pPrev" style="width:80px;height:80px;border-radius:10px;object-fit:cover;display:none"><button class="btn-blue" onclick="addPerson()"><svg class="icon"><use href="#i-check"/></svg> Save Person</button></div><div id="personList"></div></div>
+    <div id="idcard" class="hidden"><div class="card no-print"><h3><svg class="icon"><use href="#i-id"/></svg> Print ID Card</h3><select id="idSelect" onchange="showIDCard()"><option value="">-- Select Person --</option></select><button class="btn-blue" onclick="makeBossCard()">Use My Card</button></div><div id="idCardOut"></div></div>
+    <div id="roster" class="hidden no-print"><div class="card"><h3><svg class="icon"><use href="#i-cal"/></svg> Roster - Meru</h3><input id="rName" placeholder="Staff Name"><select id="rDay"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option></select><select id="rShift"><option>Day Shift 6am-6pm</option><option>Night Shift 6pm-6am</option></select><select id="rPlace"><option>Meru Town</option><option>Nkubu</option><option>Maua</option><option>Timau</option></select><button class="btn-pink" onclick="addRoster()">+ Add Roster</button><button class="btn-dark" onclick="autoRoster()">Auto Fill Week</button></div><div class="card"><h3><svg class="icon"><use href="#i-list"/></svg> This Week</h3><div id="rosterList"></div></div></div>
+    <div id="scan" class="hidden no-print"><div class="card"><h3><svg class="icon"><use href="#i-cam"/></svg> Face Scan</h3><video id="cam" autoplay playsinline></video><canvas id="canvas" style="display:none"></canvas><img id="snapImg" style="width:100%;border-radius:12px;display:none"><button class="btn-blue" onclick="startCam()"><svg class="icon"><use href="#i-cam"/></svg> Open Camera</button><button class="btn-green" onclick="takeSnap()"><svg class="icon"><use href="#i-check"/></svg> Take & Scan</button><button class="btn-orange" onclick="stopCam()">Stop</button><div id="scanResult" style="margin-top:10px"></div></div></div>
+    <div id="chat" class="hidden no-print"><div class="card"><h3><svg class="icon"><use href="#i-chat"/></svg> Team Chat</h3><div class="chat-box" id="chatBox"></div><div style="display:flex;gap:8px;margin-top:8px"><input id="chatInput" placeholder="Type..." style="margin:0"><button class="btn-blue" style="width:80px;margin:0" onclick="sendChat()">Send</button></div></div></div>
+    <div id="gate" class="hidden no-print"><div class="card"><h3><svg class="icon"><use href="#i-ticket"/></svg> Visitor Gate Pass</h3><input id="vName" placeholder="Visitor Name"><input id="vPhone" placeholder="Phone / ID"><select id="vPurpose"><option>Visit Shop</option><option>Delivery</option><option>Meeting</option><option>Maintenance</option></select><select id="vPlace"><option>Meru Town Office</option><option>Nkubu Shop</option><option>Maua Branch</option><option>Timau Gate</option></select><button class="btn-green" onclick="makePass()"><svg class="icon"><use href="#i-ticket"/></svg> Create Pass + QR</button></div><div id="passOut"></div><div id="visitorList"></div></div>
+    <div id="report" class="hidden no-print"><div class="card"><h3><svg class="icon"><use href="#i-chart"/></svg> Daily Report</h3><button class="btn-blue" onclick="makeReport()"><svg class="icon"><use href="#i-chart"/></svg> Generate Report</button><div id="reportOut" style="margin-top:12px"></div></div></div>
+    <div id="boda" class="hidden no-print"><div class="card"><h3><svg class="icon"><use href="#i-bike"/></svg> Boda Boda</h3><input id="bName" placeholder="Rider Name"><input id="bPlate" placeholder="Plate"><select id="bStage"><option>Meru Town Stage</option><option>Nkubu Stage</option><option>Maua Stage</option><option>Timau Stage</option></select><input id="bPhone" placeholder="Phone"><button class="btn-green" onclick="addBoda()">Save Boda</button></div><div id="bodaList"></div></div>
+    <div id="cases" class="hidden no-print"><div class="card"><h3><svg class="icon"><use href="#i-folder"/></svg> New Case</h3><input id="cTitle" placeholder="Case Title"><select id="cType"><option>Shop Break-in</option><option>Miraa Theft</option><option>Farm Theft</option><option>Land Dispute</option><option>Boda Theft</option><option>Phone Theft</option></select><select id="cStatus"><option value="Open">Open</option><option value="Investigating">Investigating</option><option value="Solved">Solved</option></select><textarea id="cDesc" placeholder="Details..."></textarea><button class="btn-blue" onclick="addCase()">Save Case</button></div><div id="caseList"></div></div>
+    <div id="map" class="hidden no-print"><div class="card"><h3><svg class="icon"><use href="#i-map"/></svg> Meru Map</h3><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=37.60%2C0.00%2C37.70%2C0.10&layer=map&marker=0.0463%2C37.6552"></iframe><button class="btn-dark" onclick="window.open('https://www.openstreetmap.org/search?query=Meru, Kenya','_blank')">Open Full Map</button></div></div>
+    <div id="admin" class="hidden no-print"><div class="card"><h3><svg class="icon"><use href="#i-gear"/></svg> ADMIN PANEL</h3><div style="display:flex;gap:8px"><button class="btn-green" style="flex:1" onclick="exportExcel()"><svg class="icon"><use href="#i-download"/></svg> Excel</button><button class="btn-dark" style="flex:1" onclick="exportPDF()"><svg class="icon"><use href="#i-print"/></svg> PDF</button><button class="btn-orange" style="flex:1" onclick="toggleTheme()"><svg class="icon"><use href="#i-moon"/></svg> Theme</button></div><button class="btn-blue" onclick="backupData()">Backup JSON</button><button class="btn-red" onclick="wipeAll()">DELETE ALL DATA</button><button class="btn-dark" onclick="logout()"><svg class="icon"><use href="#i-logout"/></svg> Logout</button></div><div class="card"><h3>All Users</h3><div id="adminUsers"></div></div><div class="card"><h3>Persons</h3><div id="adminPersons"></div></div><div class="card"><h3>Boda</h3><div id="adminBoda"></div></div><div class="card"><h3>Cases</h3><div id="adminCases"></div></div><div class="card"><h3>Visitors</h3><div id="adminVisitors"></div></div></div>
+  </div>
+  <div class="bottom-nav no-print" id="bottomNav">
+    <button id="nb1" class="active" onclick="show('dash')"><svg><use href="#i-home"/></svg>Home</button>
+    <button id="nb2" onclick="show('person')"><svg><use href="#i-user"/></svg>Person</button>
+    <button id="nb3" onclick="show('scan')"><svg><use href="#i-cam"/></svg>Scan</button>
+    <button id="nb4" onclick="show('chat')"><span class="nav-wrap"><svg><use href="#i-chat"/></svg><span class="dot" id="chatDot" style="display:none"></span></span>Chat</button>
+    <button id="nb5" onclick="show('gate')"><svg><use href="#i-ticket"/></svg>Gate</button>
+    <button id="nb6" onclick="show('report')"><svg><use href="#i-chart"/></svg>Report</button>
+    <button id="nb8" onclick="show('boda')"><svg><use href="#i-bike"/></svg>Boda</button>
+    <button id="nb9" onclick="show('cases')"><svg><use href="#i-folder"/></svg>Cases</button>
+    <button id="nb10" onclick="show('roster')"><svg><use href="#i-cal"/></svg>Roster</button>
+    <button id="nb11" onclick="show('idcard')"><svg><use href="#i-id"/></svg>ID</button>
+    <button id="nb12" onclick="show('map')"><svg><use href="#i-map"/></svg>Map</button>
+    <button id="nb7" onclick="show('admin')"><svg><use href="#i-gear"/></svg>Admin</button>
+  </div>
+</div>
+<button class="sos-float no-print" id="sosFloat" onclick="sendSOS()" style="display:none"><svg class="icon" style="width:28px;height:28px"><use href="#i-sos"/></svg></button>
+
+<script>
+// ===== AUTH SYSTEM - REAL =====
+let users = JSON.parse(localStorage.getItem('st_users')||'[]');
+if(!users.length){ users=[{name:'Boss',user:'boss',phone:'0700000000',town:'Meru Town',pass:'meru123',photo:'https://via.placeholder.com/100'}]; localStorage.setItem('st_users',JSON.stringify(users)); }
+let currentUser = null;
+let resetUser = null, resetCode = '', resetExpiry = 0;
+
+function getUsers(){ return JSON.parse(localStorage.getItem('st_users')||'[]'); }
+function saveUsers(u){ localStorage.setItem('st_users',JSON.stringify(u)); users=u; }
+function showErr(id,msg){ let e=document.getElementById(id); e.style.display='block'; e.textContent=msg; }
+function hideErr(id){ let e=document.getElementById(id); if(e) e.style.display='none'; }
+function togglePass(id){ let el=document.getElementById(id); el.type = el.type==='password'?'text':'password'; }
+function showAuth(which){
+  ['loginForm','registerForm','forgotForm'].forEach(x=>document.getElementById(x).classList.add('hidden'));
+  if(which==='login') document.getElementById('loginForm').classList.remove('hidden');
+  if(which==='register') document.getElementById('registerForm').classList.remove('hidden');
+  if(which==='forgot'){ document.getElementById('forgotForm').classList.remove('hidden'); document.getElementById('forgotStep2').classList.add('hidden'); document.getElementById('demoCodeBox').classList.add('hidden'); }
+}
+function renderRecent(){
+  let recent = JSON.parse(localStorage.getItem('st_recent')||'[]');
+  let box=document.getElementById('recentBox');
+  if(!recent.length){ box.innerHTML=''; return; }
+  let html='<p style="font-size:13px;color:#64748b;text-align:left;margin:8px 0 4px">Recent - Tap to login:</p>';
+  recent.slice(0,3).forEach(r=>{
+    html+=`<div class="recent-user" onclick="fillRecent('${r.user}')"><img src="${r.photo||'https://via.placeholder.com/100'}"><div style="flex:1"><b>${r.name}</b><br><small style="color:#64748b">@${r.user} • ${r.town||''}</small></div><span style="color:#94a3b8;font-size:18px">›</span></div>`;
+  });
+  html+='<p style="text-align:right"><span class="link" style="font-size:12px" onclick="clearRecent()">Clear recent</span></p>';
+  box.innerHTML=html;
+}
+function fillRecent(user){ document.getElementById('u').value=user; document.getElementById('p').focus(); }
+function clearRecent(){ localStorage.removeItem('st_recent'); renderRecent(); }
+function addRecent(userObj){
+  let recent=JSON.parse(localStorage.getItem('st_recent')||'[]');
+  recent=recent.filter(r=>r.user!==userObj.user);
+  recent.unshift({name:userObj.name,user:userObj.user,town:userObj.town,photo:userObj.photo});
+  localStorage.setItem('st_recent',JSON.stringify(recent.slice(0,5)));
+  renderRecent();
+}
+function doLogin(){
+  let u=document.getElementById('u').value.trim().toLowerCase();
+  let p=document.getElementById('p').value;
+  hideErr('loginErr');
+  if(!u||!p) return showErr('loginErr','Enter username and password');
+  let found=getUsers().find(x=>x.user.toLowerCase()===u || x.phone===u);
+  if(!found) return showErr('loginErr','No account for '+u+'. Create account below.');
+  if(found.pass!==p) return showErr('loginErr','Wrong password! Tap Forgot Password.');
+  loginSuccess(found);
+}
+function doRegister(){
+  let name=document.getElementById('rName').value.trim();
+  let user=document.getElementById('rUser').value.trim().toLowerCase().replace(/\s/g,'');
+  let phone=document.getElementById('rPhone').value.trim();
+  let town=document.getElementById('rTown').value.trim()||'Meru Town';
+  let pass=document.getElementById('rPass').value;
+  let pass2=document.getElementById('rPass2').value;
+  hideErr('regErr'); document.getElementById('regOk').style.display='none';
+  if(!name||!user||!phone) return showErr('regErr','Fill Name, Username and Phone');
+  if(pass.length<6) return showErr('regErr','Password must be 6+ characters');
+  if(pass!==pass2) return showErr('regErr','Passwords do not match');
+  let all=getUsers();
+  if(all.find(x=>x.user===user)) return showErr('regErr','Username '+user+' already taken. Try another.');
+  if(all.find(x=>x.phone===phone)) return showErr('regErr','Phone already registered. Login instead.');
+  let nu={name:name,user:user,phone:phone,town:town,pass:pass,photo:'https://via.placeholder.com/100?text='+encodeURIComponent(name[0])};
+  all.push(nu); saveUsers(all);
+  document.getElementById('regOk').style.display='block'; document.getElementById('regOk').textContent='Account created! Login now.';
+  document.getElementById('u').value=user; document.getElementById('p').value='';
+  setTimeout(()=>showAuth('login'),800);
+}
+function sendResetCode(){
+  let u=document.getElementById('fUser').value.trim().toLowerCase();
+  hideErr('forgotErr');
+  if(!u) return showErr('forgotErr','Enter your username');
+  let found=getUsers().find(x=>x.user.toLowerCase()===u || x.phone===u);
+  if(!found) return showErr('forgotErr','No account for '+u);
+  resetUser=found; resetCode=Math.floor(100000+Math.random()*900000).toString(); resetExpiry=Date.now()+10*60*1000;
+  localStorage.setItem('st_reset',JSON.stringify({user:found.user,code:resetCode,expires:resetExpiry}));
+  document.getElementById('demoCodeBox').classList.remove('hidden');
+  document.getElementById('demoCode').textContent=resetCode;
+  document.getElementById('forgotStep2').classList.remove('hidden');
+  document.getElementById('fc0').focus();
+}
+function moveCode(el,next){ el.value=el.value.replace(/[^0-9]/g,''); if(el.value&&next<6) document.getElementById('fc'+next).focus(); }
+function getResetCode(){ let c=''; for(let i=0;i<6;i++) c+=document.getElementById('fc'+i).value; return c; }
+function doResetPassword(){
+  let entered=getResetCode();
+  let np=document.getElementById('fNewPass').value;
+  let np2=document.getElementById('fNewPass2').value;
+  hideErr('forgotErr');
+  if(entered.length!==6) return showErr('forgotErr','Enter all 6 digits');
+  if(Date.now()>resetExpiry) return showErr('forgotErr','Code expired. Send new code.');
+  if(entered!==resetCode) return showErr('forgotErr','Wrong code!');
+  if(np.length<6) return showErr('forgotErr','New password must be 6+');
+  if(np!==np2) return showErr('forgotErr','Passwords do not match');
+  let all=getUsers(); let idx=all.findIndex(x=>x.user===resetUser.user); all[idx].pass=np; saveUsers(all);
+  localStorage.removeItem('st_reset');
+  alert('Password changed! Login with new password.');
+  document.getElementById('u').value=resetUser.user;
+  showAuth('login');
+}
+function loginSuccess(userObj){
+  currentUser=userObj;
+  document.getElementById('welcomeName').textContent=userObj.name.split(' ')[0];
+  document.getElementById('topUser').textContent='MERU • '+userObj.name.split(' ')[0].toUpperCase();
+  let remember=document.getElementById('rememberMe').checked;
+  if(remember){
+    addRecent(userObj);
+    localStorage.setItem('st_session',JSON.stringify({user:userObj.user,ts:Date.now()}));
+  } else {
+    localStorage.removeItem('st_session');
+  }
+  document.getElementById('loginPage').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('sosFloat').style.display='flex';
+  renderAll(); show('dash');
+}
+function verifyPay(){
+  let code=document.getElementById('mpesaCode').value;
+  if(code!='1234'&&code.length<4) return alert('Use 1234 demo');
+  // M-PESA login uses Boss account
+  let boss=getUsers().find(x=>x.user==='boss')||getUsers()[0];
+  loginSuccess(boss);
+}
+function demoPay(){ document.getElementById('mpesaCode').value='1234'; verifyPay(); }
+function logout(){
+  if(!confirm('Logout?')) return;
+  stopCam();
+  localStorage.removeItem('st_session');
+  currentUser=null;
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('sosFloat').style.display='none';
+  document.getElementById('loginPage').classList.remove('hidden');
+  showAuth('login');
+  renderRecent();
+}
+// Auto-login if Remember Me was checked
+function checkSession(){
+  renderRecent();
+  try{
+    let s=JSON.parse(localStorage.getItem('st_session')||'null');
+    if(s && Date.now()-s.ts < 7*24*60*60*1000){
+      let found=getUsers().find(x=>x.user===s.user);
+      if(found){ document.getElementById('u').value=found.user; loginSuccess(found); return; }
+    }
+  }catch(e){}
+}
+
+// ===== APP DATA =====
+let persons=JSON.parse(localStorage.getItem('st_persons')||'[]');
+let bodas=JSON.parse(localStorage.getItem('st_bodas')||'[]');
+let cases=JSON.parse(localStorage.getItem('st_cases')||'[]');
+let visitors=JSON.parse(localStorage.getItem('st_visitors')||'[]');
+let chats=JSON.parse(localStorage.getItem('st_chats')||'[{"who":"Mary","text":"Hi Boss, Maua safe","time":"09:12"}]');
+let sosHistory=JSON.parse(localStorage.getItem('st_sos')||'[]');
+let roster=JSON.parse(localStorage.getItem('st_roster')||'[]');
+let tempPhoto=""; let stream=null;
+let theme=localStorage.getItem('st_theme')||'dark'; if(theme=='light') document.body.classList.add('light');
+function toggleTheme(){ document.body.classList.toggle('light'); localStorage.setItem('st_theme', document.body.classList.contains('light')?'light':'dark'); }
+function show(id){ ['dash','person','idcard','roster','scan','chat','gate','report','boda','cases','map','admin'].forEach(x=>document.getElementById(x).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); ['nb1','nb2','nb3','nb4','nb5','nb6','nb7','nb8','nb9','nb10','nb11','nb12'].forEach(b=>document.getElementById(b)?.classList.remove('active')); let m={dash:'nb1',person:'nb2',scan:'nb3',chat:'nb4',gate:'nb5',report:'nb6',admin:'nb7',boda:'nb8',cases:'nb9',roster:'nb10',idcard:'nb11',map:'nb12'}; if(m[id]) document.getElementById(m[id]).classList.add('active'); if(id=='chat') document.getElementById('chatDot').style.display='none'; if(id=='idcard') fillIdSelect(); window.scrollTo(0,0); }
+function previewPhoto(inp,imgId){ if(!inp.files[0]) return; let r=new FileReader(); r.onload=e=>{tempPhoto=e.target.result; let im=document.getElementById(imgId); im.src=tempPhoto; im.style.display='block';}; r.readAsDataURL(inp.files[0]); }
+function checkDup(){ let n=document.getElementById('pName').value.toLowerCase().trim(); let f=persons.some(p=>p.name.toLowerCase()==n && n!=""); document.getElementById('dupAlert').style.display=f?'block':'none'; }
+function addPerson(){ let n=document.getElementById('pName').value.trim(); if(!n) return alert('Enter name'); persons.push({name:n,id:document.getElementById('pId').value,town:document.getElementById('pTown').value,photo:tempPhoto||'https://via.placeholder.com/100'}); localStorage.setItem('st_persons',JSON.stringify(persons)); document.getElementById('pName').value=''; tempPhoto=''; document.getElementById('pPrev').style.display='none'; renderAll(); alert('Person Saved'); }
+function addBoda(){ let n=document.getElementById('bName').value.trim(),pl=document.getElementById('bPlate').value.trim(); if(!n||!pl) return alert('Enter rider + plate'); bodas.push({name:n,plate:pl,stage:document.getElementById('bStage').value,phone:document.getElementById('bPhone').value}); localStorage.setItem('st_bodas',JSON.stringify(bodas)); renderAll(); alert('Boda Saved'); }
+function addCase(){ let t=document.getElementById('cTitle').value.trim(); if(!t) return alert('Enter case'); cases.push({title:t,type:document.getElementById('cType').value,status:document.getElementById('cStatus').value,desc:document.getElementById('cDesc').value}); localStorage.setItem('st_cases',JSON.stringify(cases)); renderAll(); alert('Case Saved'); }
+function markSolved(title){ let c=cases.find(x=>x.title==title); if(c){c.status='Solved'; localStorage.setItem('st_cases',JSON.stringify(cases)); renderAll();} }
+function sendSOS(){ if(!confirm('SEND SOS?')) return; let who=currentUser?currentUser.name:'Boss'; let msg=`SOS from ${who} - Meru Town - ${new Date().toLocaleString()}`; sosHistory.unshift(msg); localStorage.setItem('st_sos',JSON.stringify(sosHistory)); alert('SOS SENT'); if(navigator.onLine) window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank'); renderAll(); }
+async function startCam(){ try{ stream=await navigator.mediaDevices.getUserMedia({video:true}); document.getElementById('cam').srcObject=stream; }catch(e){ alert('Allow camera!'); } }
+function stopCam(){ if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; } }
+function takeSnap(){ let v=document.getElementById('cam'); if(!v.srcObject) return alert('Open camera first'); let c=document.getElementById('canvas'); c.width=v.videoWidth; c.height=v.videoHeight; c.getContext('2d').drawImage(v,0,0); let img=document.getElementById('snapImg'); img.src=c.toDataURL(); img.style.display='block'; let out=document.getElementById('scanResult'); if(persons.length>0){ let p=persons[0]; out.innerHTML=`<div style="background:#052e16;padding:12px;border-radius:12px">MATCH: ${p.name} - ${p.town}</div>`; } else out.innerHTML=`<div style="background:#fef3c7;color:#92400e;padding:12px;border-radius:12px">No match</div>`; }
+function sendChat(){ let inp=document.getElementById('chatInput'); let t=inp.value.trim(); if(!t) return; let who=currentUser?currentUser.name.split(' ')[0]:'Boss'; chats.push({who:who,text:t,time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}); localStorage.setItem('st_chats',JSON.stringify(chats)); inp.value=''; renderChat(); setTimeout(()=>{ chats.push({who:'Mary',text:'Copy '+who,time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}); localStorage.setItem('st_chats',JSON.stringify(chats)); renderChat(); document.getElementById('chatDot').style.display='block'; },800); }
+function renderChat(){ document.getElementById('chatBox').innerHTML=chats.map(c=>`<div class="msg ${c.who===(currentUser?currentUser.name.split(' ')[0]:'Boss')?'me':'other'}"><b>${c.who}</b> ${c.text}<small> ${c.time}</small></div>`).join(''); let cb=document.getElementById('chatBox'); cb.scrollTop=cb.scrollHeight; }
+function makePass(){ let n=document.getElementById('vName').value.trim(); if(!n) return alert('Enter visitor'); let code='MERU-'+Math.floor(1000+Math.random()*9000); let time=new Date().toLocaleString(); let pur=document.getElementById('vPurpose').value; let place=document.getElementById('vPlace').value; visitors.push({name:n,phone:document.getElementById('vPhone').value,purpose:pur,place:place,code:code,time:time}); localStorage.setItem('st_visitors',JSON.stringify(visitors)); let qr=`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(code+' | '+n)}`; document.getElementById('passOut').innerHTML=`<div class="qr-box"><h3>GATE PASS</h3><p><b>${n}</b><br>${place} • ${pur}<br>Code: <b>${code}</b></p><img src="${qr}" style="width:180px;height:180px"><br><button class="btn-green" style="width:auto;padding:10px 18px" onclick="window.print()">Print</button></div>`; renderAll(); }
+function makeReport(){ let today=new Date().toDateString(); let open=cases.filter(c=>c.status=='Open').length, solved=cases.filter(c=>c.status=='Solved').length; let text=`SECURE TRACE v12 - DAILY REPORT\nMeru Town, Kenya\n${today}\nBy: ${currentUser?currentUser.name:'Boss'}\n\nPersons: ${persons.length}\nBoda: ${bodas.length}\nVisitors: ${visitors.length}\nCases: ${cases.length} | Open ${open} | Solved ${solved}\nRoster: ${roster.length}\nSOS: ${sosHistory.length}`; document.getElementById('reportOut').innerHTML=`<div class="report-box">${text}</div><button class="btn-green" onclick="shareReport()">Share WhatsApp</button>`; window._lastReport=text; }
+function shareReport(){ if(window._lastReport) window.open('https://wa.me/?text='+encodeURIComponent(window._lastReport),'_blank'); }
+function addRoster(){ let n=document.getElementById('rName').value.trim(); if(!n) return alert('Enter staff'); roster.push({name:n,day:document.getElementById('rDay').value,shift:document.getElementById('rShift').value,place:document.getElementById('rPlace').value}); localStorage.setItem('st_roster',JSON.stringify(roster)); document.getElementById('rName').value=''; renderAll(); }
+function autoRoster(){ roster=[{name:'Boss',day:'Monday',shift:'Day Shift 6am-6pm',place:'Meru Town'},{name:'John',day:'Monday',shift:'Day Shift 6am-6pm',place:'Nkubu'},{name:'Mary',day:'Monday',shift:'Night Shift 6pm-6am',place:'Maua'}]; localStorage.setItem('st_roster',JSON.stringify(roster)); renderAll(); }
+function getTodayName(){ return ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()]; }
+function fillIdSelect(){ let sel=document.getElementById('idSelect'); sel.innerHTML='<option value="">-- Select Person --</option>'+persons.map((p,i)=>`<option value="${i}">${p.name} - ${p.town}</option>`).join(''); }
+function showIDCard(){ let idx=document.getElementById('idSelect').value; if(idx==="") return; renderIDCard(persons[idx]); }
+function makeBossCard(){ let p=currentUser?{name:currentUser.name,id:currentUser.phone,town:currentUser.town,photo:currentUser.photo}:{name:'Boss - Meru',id:'ST-001',town:'Meru Town',photo:'https://via.placeholder.com/100'}; renderIDCard(p); }
+function renderIDCard(p){ let code='ST-'+Math.floor(1000+Math.random()*9000); let qr=`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(p.name+' | '+p.id)}`; document.getElementById('idCardOut').innerHTML=`<div class="id-card"><div class="id-top"><b>SECURE TRACE</b><br><small>MERU • KENYA • OFFICIAL ID</small></div><div class="id-body"><img src="${p.photo}"><div><b style="font-size:18px">${p.name}</b><br><small>ID / Phone</small><br><b>${p.id||'ST-001'}</b><br><small>Town</small><br><b>${p.town}</b><br><span style="background:#22c55e;color:#fff;padding:3px 8px;border-radius:20px;font-size:11px">VERIFIED</span></div><img src="${qr}" style="width:70px;height:70px;border:none;margin-left:auto"></div><div style="background:#0f172a;color:#fff;text-align:center;padding:8px;font-size:11px">ID: ${code} • Meru Town Office • v12</div></div><div class="no-print" style="text-align:center;margin-top:10px"><button class="btn-green" style="width:auto;padding:10px 18px" onclick="window.print()">Print ID</button></div>`; }
+function delPerson(i){ if(!confirm('Delete?')) return; persons.splice(i,1); localStorage.setItem('st_persons',JSON.stringify(persons)); renderAll(); }
+function editPerson(i){ let p=persons[i]; let nn=prompt('Edit Name',p.name); if(nn) p.name=nn; localStorage.setItem('st_persons',JSON.stringify(persons)); renderAll(); }
+function delBoda(i){ if(!confirm('Delete boda?')) return; bodas.splice(i,1); localStorage.setItem('st_bodas',JSON.stringify(bodas)); renderAll(); }
+function editBoda(i){ let b=bodas[i]; let nn=prompt('Rider',b.name); if(nn) b.name=nn; localStorage.setItem('st_bodas',JSON.stringify(bodas)); renderAll(); }
+function delCase(i){ if(!confirm('Delete case?')) return; cases.splice(i,1); localStorage.setItem('st_cases',JSON.stringify(cases)); renderAll(); }
+function editCase(i){ let c=cases[i]; let ns=prompt('Status',c.status); if(ns) c.status=ns; localStorage.setItem('st_cases',JSON.stringify(cases)); renderAll(); }
+function delVisitor(i){ visitors.splice(i,1); localStorage.setItem('st_visitors',JSON.stringify(visitors)); renderAll(); }
+function delUser(user){ if(user==='boss') return alert('Cannot delete Boss'); if(!confirm('Delete user '+user+'?')) return; let all=getUsers().filter(x=>x.user!==user); saveUsers(all); renderAll(); }
+function wipeAll(){ if(!confirm('DELETE ALL? This deletes users too!')) return; localStorage.clear(); location.reload(); }
+function backupData(){ let data={users:getUsers(),persons,bodas,cases,visitors,chats,roster}; let blob=new Blob([JSON.stringify(data)],{type:'application/json'}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='secure-trace-v12-backup.json'; a.click(); }
+function exportExcel(){ let csv='Type,Name,ID/Plate,Town,Status\n'; persons.forEach(p=>csv+=`Person,${p.name},${p.id},${p.town},\n`); bodas.forEach(b=>csv+=`Boda,${b.name},${b.plate},${b.stage},\n`); cases.forEach(c=>csv+=`Case,${c.title},${c.type},,${c.status}\n`); let blob=new Blob([csv],{type:'text/csv'}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='secure-trace-v12.csv'; a.click(); }
+function exportPDF(){ window.print(); }
+function renderAll(){
+  document.getElementById('cPersons').innerText=persons.length;
+  document.getElementById('cBoda').innerText=bodas.length;
+  document.getElementById('cCases').innerText=cases.length;
+  document.getElementById('cVisitors').innerText=visitors.length;
+  let today=getTodayName(); let todays=roster.filter(r=>r.day==today);
+  document.getElementById('cDuty').innerText=todays.length;
+  document.getElementById('todayDuty').innerHTML=`Today: <b>${today}</b> • On Duty: <b>${todays.length}</b>`;
+  let q=(document.getElementById('qSearch')?.value||'').toLowerCase();
+  document.getElementById('searchOut').innerHTML=persons.filter(p=>p.name.toLowerCase().includes(q)).map(p=>`<div class="person"><img src="${p.photo}"><div><b>${p.name}</b><br><small>${p.town}</small></div></div>`).join('');
+  document.getElementById('personList').innerHTML=persons.map((p,i)=>`<div class="person"><img src="${p.photo}"><div><b>${p.name}</b><br><small>${p.town} • ${p.id}</small></div><div class="admin-row" style="margin-left:auto"><button class="btn-blue" onclick="editPerson(${i})">Edit</button><button class="btn-red" onclick="delPerson(${i})">Del</button></div></div>`).join('')||'<p>No persons</p>';
+  document.getElementById('bodaList').innerHTML=bodas.map((b,i)=>`<div class="person"><div><b>${b.name}</b><br><small>${b.plate} • ${b.stage}</small></div><div class="admin-row" style="margin-left:auto"><button class="btn-blue" onclick="editBoda(${i})">Edit</button><button class="btn-red" onclick="delBoda(${i})">Del</button></div></div>`).join('')||'<p>No boda</p>';
+  document.getElementById('caseList').innerHTML=cases.map((c,i)=>{let cls=c.status=='Open'?'open':c.status=='Investigating'?'invest':'solved'; return `<div class="card"><b>${c.title}</b> <span class="badge ${cls}">${c.status}</span><br><small>${c.type} • ${c.desc}</small><br><div class="admin-row" style="margin-top:8px"><button class="btn-green" onclick="markSolved('${c.title}')">Solved</button><button class="btn-blue" onclick="editCase(${i})">Edit</button><button class="btn-red" onclick="delCase(${i})">Del</button></div></div>`;}).join('')||'<p>No cases</p>';
+  document.getElementById('visitorList').innerHTML=visitors.map(v=>`<div class="person"><div><b>${v.name}</b><br><small>${v.code} • ${v.place}</small></div></div>`).join('')||'';
+  document.getElementById('rosterList').innerHTML=roster.map(r=>`<div class="roster-day"><div><b>${r.name}</b><br><small>${r.day} • ${r.shift} • ${r.place}</small></div><span class="badge ${r.day==today?'solved':'open'}">${r.day}</span></div>`).join('')||'<p>No roster</p>';
+  document.getElementById('adminUsers').innerHTML=getUsers().map(u=>`<div class="person"><img src="${u.photo}"><div><b>${u.name}</b><br><small>@${u.user} • ${u.phone} • ${u.town}</small></div><button class="btn-red" style="width:auto;margin-left:auto;padding:7px 10px" onclick="delUser('${u.user}')">Del</button></div>`).join('')||'No users';
+  document.getElementById('adminPersons').innerHTML=persons.map((p,i)=>`<div class="person"><img src="${p.photo}"><div><b>${p.name}</b></div><div class="admin-row" style="margin-left:auto"><button class="btn-blue" onclick="editPerson(${i})">Edit</button><button class="btn-red" onclick="delPerson(${i})">Del</button></div></div>`).join('')||'No persons';
+  document.getElementById('adminBoda').innerHTML=bodas.map((b,i)=>`<div class="person"><div><b>${b.name} - ${b.plate}</b></div><button class="btn-red" style="width:auto;margin-left:auto;padding:7px 10px" onclick="delBoda(${i})">Del</button></div>`).join('')||'No boda';
+  document.getElementById('adminCases').innerHTML=cases.map((c,i)=>`<div class="person"><div><b>${c.title} - ${c.status}</b></div><button class="btn-red" style="width:auto;margin-left:auto;padding:7px 10px" onclick="delCase(${i})">Del</button></div>`).join('')||'No cases';
+  document.getElementById('adminVisitors').innerHTML=visitors.map((v,i)=>`<div class="person"><div><b>${v.name} - ${v.code}</b></div><button class="btn-red" style="width:auto;margin-left:auto;padding:7px 10px" onclick="delVisitor(${i})">Del</button></div>`).join('')||'No visitors';
+  renderChat();
+}
+checkSession();
+renderAll();
+</script>
+</body>
+</html>

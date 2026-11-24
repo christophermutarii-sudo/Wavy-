@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profile - Mutarii-Net</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="manifest" href="manifest.json">
+<style>
+.top a{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:#000}
+.top svg{width:20px;height:20px;fill:none;stroke:#000;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bottom-nav{display:flex;justify-content:space-around;padding:12px 0;background:#fff;position:fixed;bottom:0;left:0;right:0;border-top:1px solid #eee}
+.bottom-nav a{display:flex;align-items:center;justify-content:center}
+.bottom-nav a svg{width:24px;height:24px;fill:none;stroke:#000;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bottom-nav a.active svg{stroke:#0082ff}
+#chatBtn{display:inline-flex;align-items:center;gap:8px;justify-content:center}
+#chatBtn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body>
+<div class="top">Mutarii-Net<br>
+<a href="index.html"><svg viewBox="0 0 24 24"><path d="M3 10 L12 2 L21 10 V20 H3 Z"/><path d="M9 20 V14 H15 V20"/></svg> Home</a>
+<a href="search.html"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21 L16.5 16.5"/></svg> Search</a>
+</div>
+
+<div class="container">
+  <div class="card" style="text-align:center;">
+    <div id="userAvatarWrap" style="display:flex; justify-content:center; margin:10px 0;"></div>
+    <h2 id="userName">Loading...</h2>
+    <p id="userBio" style="color:#65676b; margin:5px 0;">...</p>
+    <p id="userEmail" style="font-size:13px; color:#65676b;"></p>
+    <br>
+    <button id="chatBtn"><svg viewBox="0 0 24 24"><path d="M4 4 H20 V16 H10 L6 20 V16 H4 Z"/></svg> Message This Person</button>
+    <br><br>
+    <button class="btn-gray" id="followBtn">Follow</button>
+  </div>
+  <h3 style="margin:5px 0 10px 5px;">Their Posts</h3>
+  <div id="userPosts"></div>
+</div>
+
+<div class="bottom-nav">
+  <a href="index.html"><svg viewBox="0 0 24 24"><path d="M3 10 L12 2 L21 10 V20 H3 Z"/><path d="M9 20 V14 H15 V20"/></svg></a>
+  <a href="reels.html"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10 L21 7 V17 L16 14"/></svg></a>
+  <a href="stories.html"><svg viewBox="0 0 24 24"><path d="M5 3 H18 V21 H5 Z"/><path d="M5 3 C3 5 3 7 5 8"/><path d="M9 8 H14"/></svg></a>
+  <a href="notifications.html"><svg viewBox="0 0 24 24"><path d="M12 3 C12 3 6 6 6 11 C6 15 5 17 4 18 H20 C19 17 18 15 18 11 C18 6 12 3 12 3 Z"/><path d="M10 20 C10 21 11 22 12 22 C13 22 14 21 14 20"/></svg></a>
+  <a href="profile.html" class="active"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21 C4 16 8 14 12 14 C16 14 20 16 20 21"/></svg></a>
+</div>
+
+<script src="js/auth.js"></script>
+<script src="js/user.js"></script>
+</body>
+</html>

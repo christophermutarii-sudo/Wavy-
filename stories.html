@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wavy - Stories</title>
+<link rel="stylesheet" href="css/style.css">
+<!-- Firebase FIRST -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<div class="top"><div class="logo">Wavy<span>🌊</span> Stories</div><a href="index.html">🏠</a></div>
+<div class="container">
+  <div class="card">
+    <input id="storyText" placeholder="Share a story... What's happening? 📖">
+    <button class="btn" onclick="addStory()">Add Story</button>
+    <p class="muted center" style="margin-top:8px">Stories disappear after 24 hours</p>
+  </div>
+  <div style="display:flex;gap:12px;overflow-x:auto;padding:5px" id="storyRow"></div>
+  <div id="storyFeed"></div>
+</div>
+<div class="bottom-nav"><a href="index.html">🏠</a><a href="reels.html">🎬</a><a href="stories.html" class="active">📖</a><a href="notifications.html">🔔</a><a href="profile.html">👤</a></div>
+
+<script src="js/auth.js"></script>
+<script>
+// NO import - db and auth come from js/auth.js
+function addStory(){
+  const el = document.getElementById('storyText');
+  const t = el.value.trim();
+  if(!t) return alert('Write your story first');
+  const user = auth.currentUser;
+  const name = user ? (user.displayName || localStorage.getItem('wavyName') || user.email.split('@')[0]) : 'Wavy User';
+  db.collection("stories").add({
+    text: t, name: name, email: user ? user.email : 'anon',
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(()=>{ el.value=''; }).catch(e=> alert(e.message));
+}
+
+db.collection("stories").orderBy("createdAt","desc").onSnapshot(snap=>{
+  const row = document.getElementById('storyRow');
+  const feed = document.getElementById('storyFeed');
+  row.innerHTML=''; feed.innerHTML='';
+  if(snap.empty) feed.innerHTML='<div class="card center"><b>No stories yet</b><p class="muted">Be the first to post a story!</p></div>';
+  snap.forEach(d=>{
+    const st = d.data();
+    const pic = localStorage.getItem('wavyPic');
+    row.innerHTML += `<div style="text-align:center;min-width:70px"><div class="avatar" style="width:60px;height:60px;margin:0 auto;border:3px solid #00e5ff">${(st.name||'W')[0].toUpperCase()}</div><small>${st.name}</small></div>`;
+    feed.innerHTML += `<div class="card"><b>${st.name}</b> <span class="muted">• Story</span><div style="margin-top:8px;font-size:18px">${st.text}</div></div>`;
+  });
+});
+</script>
+</body>
+</html>
