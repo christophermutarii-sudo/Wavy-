@@ -1,0 +1,84 @@
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{background:#fff !important;color:#000 !important;padding-bottom:80px;min-height:100vh}
+a{color:#000;text-decoration:none}
+.top{position:sticky;top:0;z-index:20;background:#fff !important;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:24px;font-weight:900;color:#000}
+.logo span{color:#0082ff}
+.top a{background:#f0f0f0 !important;color:#000 !important;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;border:none !important}
+.container{max-width:650px;margin:0 auto;padding:0 16px 16px}
+.page-title{font-size:28px;font-weight:800;color:#000;display:flex;justify-content:space-between;align-items:center;padding:6px 0 14px}
+.page-title .icons{font-size:22px;display:flex;gap:14px}
+.search-pill{background:#f0f0f0 !important;border-radius:999px !important;padding:12px 16px !important;display:flex;align-items:center;gap:12px;color:#666;font-size:16px;margin-bottom:16px}
+.search-pill input{background:transparent !important;border:none !important;padding:0 !important;margin:0 !important;font-size:16px;color:#000;outline:none;width:100%}
+.card{background:#f5f5f5 !important;border:none !important;border-radius:18px !important;padding:16px !important;margin-bottom:12px !important;color:#000 !important}
+.post{display:flex;gap:12px;background:#fff !important;border-bottom:1px solid #eee !important;padding:14px 0 !important}
+.post img{width:100%;border-radius:12px;margin-top:10px}
+.post-name{cursor:pointer;color:#000 !important;font-weight:700}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none;white-space:nowrap}
+.tabs button{background:#f0f0f0 !important;border:none !important;color:#000 !important;padding:9px 16px !important;border-radius:999px !important;font-size:14px;font-weight:600;cursor:pointer;width:auto;flex-shrink:0}
+.tabs button.active{background:#e0f0ff !important;color:#0082ff !important}
+.avatar{width:44px;height:44px;min-width:44px;border-radius:50%;background:linear-gradient(135deg,#00c6ff,#7c4dff,#ff00aa) !important;color:#fff !important;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;flex-shrink:0}
+input,textarea,select{width:100%;background:#f0f0f0 !important;border:none !important;color:#000 !important;padding:13px 16px !important;border-radius:999px !important;margin-bottom:10px;outline:none;font-size:15px}
+input::placeholder,textarea::placeholder{color:#888}
+textarea{border-radius:16px !important}
+select option{color:#000;background:#fff}
+.btn{background:#0082ff !important;color:#fff !important;border:0 !important;padding:13px !important;border-radius:999px !important;font-weight:700 !important;cursor:pointer;width:100%;font-size:15px}
+.btn:active{opacity:.8}
+.btn-outline{background:transparent !important;color:#000 !important;border:1px solid #ddd !important}
+.center{text-align:center}
+.muted{color:#888 !important;font-size:13px}
+.msg{background:#f0f0f0 !important;padding:10px 14px;border-radius:16px;margin-bottom:10px;color:#000 !important;line-height:1.5}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:20;background:#fff !important;border-top:1px solid #eee !important;display:flex;justify-content:space-around;padding:8px 0 12px}
+.bottom-nav a{font-size:22px;opacity:.5;color:#000 !important;text-align:center;background:none !important;border:none !important;display:flex;flex-direction:column;align-items:center;padding:6px 12px;min-width:60px}
+.bottom-nav a.active{opacity:1}
+.ai-banner{background:#f0f0f0 !important;border:none !important;border-radius:18px !important;padding:16px !important;margin-bottom:12px !important;color:#000 !important}
+.ai-banner p{color:#666 !important}
+.ai-banner button{background:#000 !important;color:#fff !important;border:none;padding:10px 18px;border-radius:999px;font-weight:700;cursor:pointer}
+.floating-ai{position:fixed;bottom:85px;right:16px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#00c6ff,#7c4dff) !important;color:#fff !important;font-size:26px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(0,0,0,.2);z-index:999;cursor:pointer}
+
+/* LOGIN */
+.login-wrap{max-width:400px;margin:0 auto;padding:20px 16px 40px;min-height:100vh;display:flex;flex-direction:column;background:#fff !important}
+.wavy-logo-big{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#00c6ff,#0082ff,#7c4dff);color:#fff;font-size:52px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:30px auto 20px;box-shadow:0 8px 24px rgba(0,130,255,.3)}
+.saved-card{display:flex;align-items:center;gap:16px;background:#f0f0f0 !important;border:1.5px solid #d0e8ff !important;border-radius:18px !important;padding:14px 16px !important;margin-bottom:12px;cursor:pointer;position:relative;color:#000 !important}
+.saved-card .avatar{width:56px;height:56px;min-width:56px;font-size:22px}
+.saved-card b{font-size:16px;font-weight:600;color:#000}
+.saved-card .arrow{margin-left:auto;color:#888;font-size:22px}
+.saved-card .remove{position:absolute;top:6px;right:10px;color:#888;font-size:13px;background:#ddd;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2}
+.use-another{text-align:center;color:#0082ff;font-size:15px;font-weight:600;padding:16px 0 8px;cursor:pointer}
+.create-btn{background:transparent !important;color:#0082ff !important;border:1.5px solid #0082ff !important;border-radius:999px !important;padding:13px !important;font-size:15px;font-weight:600;margin-top:12px}
+.meta-logo{text-align:center;color:#888;font-size:18px;font-weight:700;margin-top:auto;padding-top:30px}
+.form-card{background:#f5f5f5 !important;border:none !important;border-radius:18px;padding:18px;margin-top:10px;color:#000 !important}
+.remember-row{display:flex;align-items:center;gap:8px;font-size:13px;color:#888;margin-bottom:12px}
+.remember-row input{width:auto !important;margin:0 !important;padding:0 !important}
+.code-inputs{display:flex;gap:8px;justify-content:center;margin:16px 0}
+.code-inputs input{width:48px !important;height:56px !important;font-size:24px !important;font-weight:800;padding:0 !important;border-radius:12px !important;text-align:center;background:#fff !important;border:1px solid #ddd !important}
+.step-dot{width:30px;height:30px;border-radius:50%;background:#f0f0f0;color:#888;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.step-dot.active{background:#0082ff;color:#fff}
+.step-dot.done{background:#00c853;color:#fff}
+.success-box{background:#e8f5e9 !important;border:1px solid #00c853 !important;border-radius:18px;padding:18px;text-align:center;margin-top:10px;color:#000 !important}
+
+/* ===== WAVY STORIES - HEXAGON + BEAUTIFUL GRADIENT ===== */
+.story-row{display:flex;gap:14px;overflow-x:auto;padding:6px 2px 14px;scrollbar-width:none}
+.wavy-story{display:flex;flex-direction:column;align-items:center;gap:8px;width:76px;flex-shrink:0;cursor:pointer;background:none;border:none;padding:0}
+.wavy-story:active{transform:scale(.95)}
+.wavy-hex-ring{width:72px;height:72px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:conic-gradient(from 0deg,#00c6ff 0%,#0082ff 15%,#7c4dff 30%,#ff00aa 50%,#ff6b00 65%,#ffcc00 80%,#00c6ff 100%);display:flex;align-items:center;justify-content:center;padding:4px;filter:drop-shadow(0 4px 10px rgba(124,77,255,.35))}
+.wavy-hex-inner{width:64px;height:64px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:#fff;padding:3px;display:flex;align-items:center;justify-content:center}
+.wavy-hex-img{width:100%;height:100%;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:linear-gradient(135deg,#00c6ff,#7c4dff);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:22px;overflow:hidden}
+.wavy-hex-img img{width:100%;height:100%;object-fit:cover}
+.wavy-story span{font-size:12px;color:#000;max-width:74px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wavy-story.seen .wavy-hex-ring{background:conic-gradient(from 0deg,#ddd 0%,#bbb 50%,#ddd 100%);filter:none;opacity:.6}
+.wavy-story.mine .wavy-hex-ring{background:conic-gradient(from 0deg,#00c6ff,#0082ff,#00c6ff)}
+.wavy-hex-plus{position:absolute;bottom:0;right:2px;width:20px;height:20px;border-radius:50%;background:#0082ff;color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;border:2px solid #fff;z-index:2}
+.wavy-story.theme-ocean .wavy-hex-ring{background:conic-gradient(from 0deg,#00c6ff,#0082ff,#00ffcc,#00c6ff)}
+.wavy-story.theme-sunset .wavy-hex-ring{background:conic-gradient(from 0deg,#ffcc00,#ff6b00,#ff00aa,#7c4dff,#ffcc00)}
+.wavy-story.theme-candy .wavy-hex-ring{background:conic-gradient(from 0deg,#ff00aa,#ff6bff,#7c4dff,#00c6ff,#ff00aa)}
+.wavy-story.theme-fire .wavy-hex-ring{background:conic-gradient(from 0deg,#ffcc00,#ff6b00,#ff0000,#ffcc00)}
+/* ===== WAVY HEXAGON RING - GLOBAL - NOT META CIRCLE ===== */
+.wavy-hex-ring{width:56px;height:56px;flex-shrink:0;background:conic-gradient(from 0deg,#0082ff,#00e5ff,#0082ff,#a855f7,#0082ff);clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);display:flex;align-items:center;justify-content:center;padding:3px;box-sizing:border-box}
+.wavy-hex-inner{width:100%;height:100%;background:#fff;clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);display:flex;align-items:center;justify-content:center}
+.wavy-hex-img{width:44px;height:44px;background:linear-gradient(135deg,#0082ff,#00e5ff);clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:800}
+.wavy-hex-ring.seen{background:#ddd}
+.wavy-hex-ring.mine{background:conic-gradient(from 0deg,#00c853,#00e5ff,#00c853)}
+.wavy-hex-ring.ai{background:conic-gradient(from 0deg,#0082ff,#00e5ff,#a855f7,#0082ff)}
+/* Kill old Meta circle avatar */
+.avatar{border-radius:0 !important}
